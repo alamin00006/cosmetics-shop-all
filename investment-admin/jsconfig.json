@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "lib": ["ES6", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "jsx": "preserve",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,58 @@
+
+[
+    {
+      "category": "PRODUCT TYPE",
+      "options": [],
+      "isCollapsible": false
+    },
+    {
+      "category": "BRAND",
+      "options": [],
+      "isCollapsible": false
+    },
+    {
+      "category": "COLOR",
+      "options": [],
+      "isCollapsible": false
+    },
+    {
+      "category": "PRODUCT FINISH",
+      "options": [],
+      "isCollapsible": false
+    },
+    {
+      "category": "MAKEUP PRODUCT TYPE",
+      "options": [],
+      "isCollapsible": false
+    },
+    {
+      "category": "PRODUCT COVERAGE",
+      "options": [
+        { "name": "Full Coverage", "count": 536 },
+        { "name": "Light Coverage", "count": 21 },
+        { "name": "Medium Coverage", "count": 55 },
+        { "name": "Medium Full Coverage", "count": 5 }
+      ],
+      "isCollapsible": true
+    },
+    {
+      "category": "FORMULATION",
+      "options": [],
+      "isCollapsible": false
+    },
+    {
+      "category": "INGREDIENTS CONSCIOUS",
+      "options": [],
+      "isCollapsible": false
+    },
+    {
+      "category": "PRODUCT WEIGHT",
+      "options": [],
+      "isCollapsible": false
+    },
+    {
+      "category": "SKIN TONE",
+      "options": [],
+      "isCollapsible": false
+    }
+  ]

@@ -1,0 +1,65 @@
+export const ADD_TO_CART = "ADD_TO_CART";
+export const REMOVE_FROM_CART = "REMOVE_FROM_CART";
+export const DELETE_FROM_CART = "DELETE_FROM_CART";
+export const CLEAR_CART = "CLEAR_CART";
+export const UPDATE_QUANTITY = "UPDATE_QUANTITY";
+
+export interface Product {
+  id: string;
+  configId: string;
+  name: string;
+  price: number;
+  discountPrice: number;
+  quantity: number;
+  fulldesc: string;
+  photos: { src: string }[];
+}
+
+export interface CartItem {
+  productId: string;
+  name: string;
+  product: Product;
+  quantity: number;
+  attributes: { [key: string]: string };
+  selectedImage: string;
+  price: string;
+  seller?: { name: string; id: string };
+}
+
+export interface Category {
+  otc_id: string;
+  name: string;
+  slug: string;
+  children_count: number;
+}
+
+interface AddToCartAction {
+  type: typeof ADD_TO_CART;
+  payload: CartItem;
+}
+
+interface RemoveFromCartAction {
+  type: typeof REMOVE_FROM_CART;
+  payload: { productId: string; configId: string };
+}
+
+interface DeleteFromCartAction {
+  type: typeof DELETE_FROM_CART;
+  payload: { productId: string; configId: string };
+}
+
+interface ClearCartAction {
+  type: typeof CLEAR_CART;
+}
+
+interface UpdateQuantityAction {
+  type: typeof UPDATE_QUANTITY;
+  payload: { productId: string; configId: string; quantity: number };
+}
+
+export type CartActionTypes =
+  | AddToCartAction
+  | RemoveFromCartAction
+  | DeleteFromCartAction
+  | ClearCartAction
+  | UpdateQuantityAction;

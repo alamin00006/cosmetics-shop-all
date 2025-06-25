@@ -1,0 +1,35 @@
+import ReactModal from "react-modal";
+import { ScaleLoader } from "react-spinners";
+
+const LoadingState = ({ isLoadingState }) => {
+  return (
+    <ReactModal
+      style={{
+        content: {
+          top: "50%",
+          left: "50%",
+
+          marginRight: "-50%",
+          transform: "translate(-50%, -45%)",
+          padding: 0,
+          border: 0,
+          background: "transparent",
+        },
+      }}
+      // className=" mt-48"
+      ariaHideApp={false}
+      isOpen={isLoadingState}
+    >
+      <div
+        className="flex justify-center items-center
+      "
+      >
+        <p>
+          <ScaleLoader size={30} speedMultiplier={0.8} color="#36d7b7" />{" "}
+        </p>
+      </div>
+    </ReactModal>
+  );
+};
+
+export default LoadingState;
