@@ -1,13 +1,12 @@
-import React from 'react';
-import TrustedBy from './footer/TrustedBy';
-import Guarantees from './footer/Guarantees';
-import Subscribe from './footer/Subscribe';
-import QuickLinks from './footer/QuickLinks';
-import Categories from './footer/Categories';
-import HelpDesk from './footer/HelpDesk';
-import SocialMedia from './footer/SocialMedia';
-import Container from './Container/Container';
-
+import React from "react";
+import TrustedBy from "./footer/TrustedBy";
+import Guarantees from "./footer/Guarantees";
+import Subscribe from "./footer/Subscribe";
+import QuickLinks from "./footer/QuickLinks";
+import Categories from "./footer/Categories";
+import HelpDesk from "./footer/HelpDesk";
+import SocialMedia from "./footer/SocialMedia";
+import Container from "./Container/Container";
 
 const Footer: React.FC = () => {
   return (

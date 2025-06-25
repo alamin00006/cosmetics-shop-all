@@ -1,5 +1,5 @@
-import React from 'react';
-import Container from '../Container/Container';
+import React from "react";
+import Container from "../Container/Container";
 
 interface Link {
   name: string;
@@ -7,13 +7,13 @@ interface Link {
 }
 
 const quickLinks: Link[] = [
-  { name: 'About Us', href: '#' },
-  { name: 'Contact Us', href: '#' },
-  { name: 'Track Orders', href: '#' },
-  { name: 'Terms & Conditions', href: '#' },
-  { name: 'Return Policy', href: '#' },
-  { name: 'Privacy Policy', href: '#' },
-  { name: 'Shipping', href: '#' },
+  { name: "About Us", href: "#" },
+  { name: "Contact Us", href: "#" },
+  { name: "Track Orders", href: "#" },
+  { name: "Terms & Conditions", href: "#" },
+  { name: "Return Policy", href: "#" },
+  { name: "Privacy Policy", href: "#" },
+  { name: "Shipping", href: "#" },
 ];
 
 const QuickLinks: React.FC = () => {

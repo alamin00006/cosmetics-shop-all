@@ -5,7 +5,8 @@ import Link from "next/link";
 
 const Banner: React.FC = () => {
   // Desktop image with multiple resolutions for srcset
-  const desktopImageSrc = "https://hokmakeup.com/cdn/shop/files/The_Beauty_Haul_Sale_Banner_1920x160_e9ae385e-0ddd-4d08-b8a9-7e2432ae9cc3.jpg?v=1743766095";
+  const desktopImageSrc =
+    "https://hokmakeup.com/cdn/shop/files/The_Beauty_Haul_Sale_Banner_1920x160_e9ae385e-0ddd-4d08-b8a9-7e2432ae9cc3.jpg?v=1743766095";
   const desktopSrcSet = [
     { url: `${desktopImageSrc}&width=550`, width: 550 },
     { url: `${desktopImageSrc}&width=750`, width: 750 },
@@ -14,13 +15,16 @@ const Banner: React.FC = () => {
     { url: `${desktopImageSrc}&width=1920`, width: 1920 },
     { url: `${desktopImageSrc}&width=2000`, width: 2000 },
     { url: `${desktopImageSrc}&width=3000`, width: 3000 },
-  ].map((set) => `${set.url} ${set.width}w`).join(", ");
+  ]
+    .map((set) => `${set.url} ${set.width}w`)
+    .join(", ");
 
   // Mobile image
-  const mobileImageSrc = "https://hokmakeup.com/cdn/shop/files/The_Beauty_Haul_Sale_Banner_550_x_275.jpg?v=1743766095";
-  const mobileSrcSet = [
-    { url: `${mobileImageSrc}&width=550`, width: 550 },
-  ].map((set) => `${set.url} ${set.width}w`).join(", ");
+  const mobileImageSrc =
+    "https://hokmakeup.com/cdn/shop/files/The_Beauty_Haul_Sale_Banner_550_x_275.jpg?v=1743766095";
+  const mobileSrcSet = [{ url: `${mobileImageSrc}&width=550`, width: 550 }]
+    .map((set) => `${set.url} ${set.width}w`)
+    .join(", ");
 
   return (
     <Link href="/collections/buy-any-3-at-949" className="block w-full">

@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 export default function ProductUploadForm() {
   const [formData, setFormData] = useState({
-    name: "Revolution Pout Lip Oil",
+    name: "",
     price: "",
     currency: "BDT",
     pointsEarned: "",
@@ -168,7 +168,6 @@ export default function ProductUploadForm() {
               value={formData.name}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-              readOnly
             />
           </div>
           <div>

@@ -148,7 +148,7 @@ const AddToCartDrawer: FC<AddToCartDrawerProps> = ({
                       return;
                     }
                     alert(
-                      `Added to cart: ${selectedItem.label} (${selectedShade})`
+                      `Added to cart: ${selectedItem.label} (${selectedShade})`,
                     );
                     onClose();
                   }}

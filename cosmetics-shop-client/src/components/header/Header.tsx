@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import TopHeader from './TopHeader';
-import MiddleHeader from './MiddleHeader';
-import BottomHeader from './BottomHeader';
+import React, { useState, useEffect } from "react";
+
+import TopHeader from "./TopHeader";
+import MiddleHeader from "./MiddleHeader";
+import BottomHeader from "./BottomHeader";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,15 +23,21 @@ const Header = () => {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'shadow-md bg-white' : ''}`}>
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? "shadow-md bg-white" : ""}`}
+    >
       <TopHeader />
       <MiddleHeader toggleMobileMenu={toggleMobileMenu} />
-      <BottomHeader isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
+      <BottomHeader
+        isMobileMenuOpen={isMobileMenuOpen}
+        setIsMobileMenuOpen={setIsMobileMenuOpen}
+      />
     </header>
   );
 };

@@ -1,5 +1,5 @@
-import React from 'react';
-import Container from '../Container/Container';
+import React from "react";
+import Container from "../Container/Container";
 
 interface Category {
   name: string;
@@ -7,12 +7,12 @@ interface Category {
 }
 
 const categories: Category[] = [
-  { name: 'Eyes', href: '#' },
-  { name: 'Face', href: '#' },
-  { name: 'Tools & Brushes', href: '#' },
-  { name: 'Combos & Gift Sets', href: '#' },
-  { name: 'Lips', href: '#' },
-  { name: 'Nails', href: '#' },
+  { name: "Eyes", href: "#" },
+  { name: "Face", href: "#" },
+  { name: "Tools & Brushes", href: "#" },
+  { name: "Combos & Gift Sets", href: "#" },
+  { name: "Lips", href: "#" },
+  { name: "Nails", href: "#" },
 ];
 
 const Categories: React.FC = () => {

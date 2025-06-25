@@ -121,7 +121,11 @@ const BottomHeader: React.FC<BottomHeaderProps> = ({
                         size={20}
                         className={clsx(
                           "transition-transform",
+<<<<<<< HEAD:components/header/BottomHeader.tsx
+                          expandedMenu === item.title && "rotate-90",
+=======
                           expandedMenu === item.title && "rotate-90"
+>>>>>>> 829d0d3f2b9e22d227299059ad4f3c8a443a03fd:src/components/header/BottomHeader.tsx
                         )}
                       />
                     )}

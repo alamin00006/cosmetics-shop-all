@@ -1,6 +1,6 @@
-import React from 'react';
-import Container from '../Container/Container';
-import { FaEnvelope } from 'react-icons/fa';
+import React from "react";
+import Container from "../Container/Container";
+import { FaEnvelope } from "react-icons/fa";
 
 const Subscribe: React.FC = () => {
   return (
@@ -13,7 +13,8 @@ const Subscribe: React.FC = () => {
           Don’t miss an update!
         </h2>
         <p className="text-sm sm:text-base text-gray-600 mb-6 text-center">
-          The latest product drops, offers, and stories straight to your phone, plus 20% off your next order
+          The latest product drops, offers, and stories straight to your phone,
+          plus 20% off your next order
         </p>
         <form className="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-md mx-auto">
           <input

@@ -1,5 +1,5 @@
-import React from 'react';
-import Container from '../Container/Container';
+import React from "react";
+import Container from "../Container/Container";
 
 interface Stat {
   value: string;
@@ -7,10 +7,10 @@ interface Stat {
 }
 
 const stats: Stat[] = [
-  { value: '2012', label: 'Founded' },
-  { value: '2k+', label: 'Products' },
-  { value: '25+', label: 'Brands' },
-  { value: '10M+', label: 'Orders delivered' },
+  { value: "2012", label: "Founded" },
+  { value: "2k+", label: "Products" },
+  { value: "25+", label: "Brands" },
+  { value: "10M+", label: "Orders delivered" },
 ];
 
 const TrustedBy: React.FC = () => {
@@ -23,7 +23,9 @@ const TrustedBy: React.FC = () => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
           {stats.map((stat, index) => (
             <div key={index}>
-              <p className="text-2xl sm:text-3xl font-bold text-gray-800">{stat.value}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-800">
+                {stat.value}
+              </p>
               <p className="text-sm sm:text-base text-gray-600">{stat.label}</p>
             </div>
           ))}

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { FiSearch, FiX } from 'react-icons/fi';
+import React from "react";
+import { FiSearch, FiX } from "react-icons/fi";
 
 interface SearchBarProps {
   searchTerm: string;
@@ -9,7 +9,11 @@ interface SearchBarProps {
   onClose: () => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, setSearchTerm, onClose }) => {
+const SearchBar: React.FC<SearchBarProps> = ({
+  searchTerm,
+  setSearchTerm,
+  onClose,
+}) => {
   return (
     <div className="w-full flex items-center justify-center space-x-3">
       <input

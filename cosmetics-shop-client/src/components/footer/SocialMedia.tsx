@@ -1,29 +1,37 @@
-import React from 'react';
-import Container from '../Container/Container';
-import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
+import React from "react";
+import Container from "../Container/Container";
+import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 
 interface SocialLink {
   name: string;
   href: string;
-  icon: 'facebook' | 'twitter' | 'instagram';
+  icon: "facebook" | "twitter" | "instagram";
 }
 
 const socialLinks: SocialLink[] = [
-  { name: 'Facebook', href: '#', icon: 'facebook' },
-  { name: 'Twitter', href: '#', icon: 'twitter' },
-  { name: 'Instagram', href: '#', icon: 'instagram' },
+  { name: "Facebook", href: "#", icon: "facebook" },
+  { name: "Twitter", href: "#", icon: "twitter" },
+  { name: "Instagram", href: "#", icon: "instagram" },
 ];
 
 const SocialMedia: React.FC = () => {
   const iconComponents = {
-    facebook: <FaFacebookF className="w-5 sm:w-6 h-5 sm:h-6 text-gray-600 hover:text-gray-900 transition-colors" />,
-    twitter: <FaTwitter className="w-5 sm:w-6 h-5 sm:h-6 text-gray-600 hover:text-gray-900 transition-colors" />,
-    instagram: <FaInstagram className="w-5 sm:w-6 h-5 sm:h-6 text-gray-600 hover:text-gray-900 transition-colors" />,
+    facebook: (
+      <FaFacebookF className="w-5 sm:w-6 h-5 sm:h-6 text-gray-600 hover:text-gray-900 transition-colors" />
+    ),
+    twitter: (
+      <FaTwitter className="w-5 sm:w-6 h-5 sm:h-6 text-gray-600 hover:text-gray-900 transition-colors" />
+    ),
+    instagram: (
+      <FaInstagram className="w-5 sm:w-6 h-5 sm:h-6 text-gray-600 hover:text-gray-900 transition-colors" />
+    ),
   };
 
   return (
     <Container className={" "}>
-      <h3 className="text-base sm:text-lg font-semibold mb-4 text-gray-800">Follow us on</h3>
+      <h3 className="text-base sm:text-lg font-semibold mb-4 text-gray-800">
+        Follow us on
+      </h3>
       <div className="flex space-x-3 sm:space-x-4">
         {socialLinks.map((link, index) => (
           <a

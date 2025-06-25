@@ -1,7 +1,6 @@
 import AdminUser from "./adminUser.model.js";
 import mongoose from "mongoose";
 import { generateAdminUserId } from "./adminUser.utils.js";
-import PRManager from "../PRManager/prManager.model.js";
 
 import SuperAdmin from "../superAdmin/superAdmin.model.js";
 import { jwtHelpers } from "../../../helpers/jwtHelpers.js";
@@ -10,7 +9,6 @@ import httpStatus from "http-status";
 import ApiError from "../../../error/ApiError.js";
 import { ENUM_USER_ROLE } from "../../../enums/user.js";
 import bcrypt from "bcryptjs";
-import Company from "../company/company.model2.js";
 import Admin from "../admin/admin.model.js";
 
 const createAdminUser = async (adminUserData, user) => {
@@ -45,8 +43,6 @@ const createAdminUser = async (adminUserData, user) => {
     }
     if (user?.role === "admin") {
       newAdminUser = await Admin.create([newAdminUserData], { session });
-    } else {
-      newAdminUser = await PRManager.create([newAdminUserData], { session });
     }
 
     if (!newAdminUser.length) {
@@ -62,8 +58,6 @@ const createAdminUser = async (adminUserData, user) => {
     }
     if (user?.role === "admin") {
       user.admin = newAdminUser[0]._id;
-    } else {
-      user.PRManager = newAdminUser[0]._id;
     }
 
     // Create a new AdminUser
@@ -138,19 +132,6 @@ const updateAdminUser = async (userOthersData, userId, user) => {
         throw new ApiError(
           httpStatus.INTERNAL_SERVER_ERROR,
           "Failed to update SuperAdmin."
-        );
-      }
-    } else {
-      const updatedPRManager = await PRManager.findByIdAndUpdate(
-        existingUser.PRManager,
-        userOthersData,
-        { new: true, session }
-      );
-
-      if (!updatedPRManager) {
-        throw new ApiError(
-          httpStatus.INTERNAL_SERVER_ERROR,
-          "Failed to update PRManager."
         );
       }
     }
@@ -239,18 +220,7 @@ const updateProfilePhoto = async (id, updateData) => {
 
   let updateUser;
 
-  if (role === ENUM_USER_ROLE.PR_MANAGER) {
-    updateUser = await PRManager.updateOne(
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          userPhoto: profilePhoto,
-        },
-      }
-    );
-  } else if (role === ENUM_USER_ROLE.SUPER_ADMIN) {
+  if (role === ENUM_USER_ROLE.SUPER_ADMIN) {
     updateUser = await SuperAdmin.updateOne(
       {
         _id: id,
@@ -258,17 +228,6 @@ const updateProfilePhoto = async (id, updateData) => {
       {
         $set: {
           userPhoto: profilePhoto,
-        },
-      }
-    );
-  } else {
-    updateUser = await Company.updateOne(
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          companyLogo: profilePhoto,
         },
       }
     );

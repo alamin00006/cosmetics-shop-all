@@ -9,6 +9,7 @@ import { fontSans } from "@/config/fonts";
 import Header from "@/components/header/Header";
 import Footer from "@/components/Footer";
 import { DesignProvider } from "./providers";
+import { Providers } from "@/redux/provider";
 
 export const metadata: Metadata = {
   title: {
@@ -34,25 +35,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
-      <head />
-      <body
-        className={clsx(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}
-      >
-        <DesignProvider
-          themeProps={{ attribute: "class", defaultTheme: "light" }}
+    <Providers>
+      <html suppressHydrationWarning lang="en">
+        <head />
+        <body
+          className={clsx(
+            "min-h-screen bg-background font-sans antialiased",
+            fontSans.variable
+          )}
         >
-          <Provider>{children}</Provider>
-          <Header />
+          <DesignProvider
+            themeProps={{ attribute: "class", defaultTheme: "light" }}
+          >
+            <Header />
 
-          {children}
+            {children}
 
-          <Footer />
-        </DesignProvider>
-      </body>
-    </html>
+            <Footer />
+          </DesignProvider>
+        </body>
+      </html>
+    </Providers>
   );
 }

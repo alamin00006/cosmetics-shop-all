@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
-'use client';
+"use client";
 
-import React from 'react';
-import { FaHeart } from 'react-icons/fa';
-import Link from 'next/link';
+import React from "react";
+import { FaHeart } from "react-icons/fa";
+import Link from "next/link";
 
 type Product = {
   id: number;
@@ -24,56 +24,63 @@ type ProductGridProps = {
 const mockProducts: Product[] = [
   {
     id: 1,
-    name: 'Lipstick Matte Red',
-    description: 'Introducing Revolution Introducing Revolution',
-    price: '$12.00',
-    originalPrice: '$15.00',
-    discount: '20% off',
-    imageUrl: 'https://hokmakeup.com/cdn/shop/files/1_38fad031-0d21-454f-baa8-7e26e8f864c1.jpg?v=1745309269',
-    imageUrl2: 'https://hokmakeup.com/cdn/shop/files/2_52a563b8-979c-40f7-b1b5-2bd1618223d1.jpg?v=1745309269',
-    shades: ['#FF0000', '#FF6347', '#C71585'],
+    name: "Lipstick Matte Red",
+    description: "Introducing Revolution Introducing Revolution",
+    price: "$12.00",
+    originalPrice: "$15.00",
+    discount: "20% off",
+    imageUrl:
+      "https://hokmakeup.com/cdn/shop/files/1_38fad031-0d21-454f-baa8-7e26e8f864c1.jpg?v=1745309269",
+    imageUrl2:
+      "https://hokmakeup.com/cdn/shop/files/2_52a563b8-979c-40f7-b1b5-2bd1618223d1.jpg?v=1745309269",
+    shades: ["#FF0000", "#FF6347", "#C71585"],
   },
   {
     id: 2,
-    name: 'Foundation Natural Beige',
-    description: 'Introducing Revolution Introducing Revolution',
-    price: '$25.00',
-    originalPrice: '$30.00',
-    discount: '17% off',
-    imageUrl: 'https://hokmakeup.com/cdn/shop/files/81555229535_1.jpg?v=1745309254',
-    imageUrl2: 'https://hokmakeup.com/cdn/shop/files/81555229535_2.jpg?v=1745309254',
-    shades: ['#F5F5DC', '#DEB887', '#D2B48C'],
+    name: "Foundation Natural Beige",
+    description: "Introducing Revolution Introducing Revolution",
+    price: "$25.00",
+    originalPrice: "$30.00",
+    discount: "17% off",
+    imageUrl:
+      "https://hokmakeup.com/cdn/shop/files/81555229535_1.jpg?v=1745309254",
+    imageUrl2:
+      "https://hokmakeup.com/cdn/shop/files/81555229535_2.jpg?v=1745309254",
+    shades: ["#F5F5DC", "#DEB887", "#D2B48C"],
   },
   {
     id: 3,
-    name: 'Mascara Volume Black',
-    description: 'Introducing Revolution Introducing Revolution',
-    price: '$18.00',
-    imageUrl: 'https://hokmakeup.com/cdn/shop/files/makeup-revolution-blush-icon-palette-491846.jpg?v=1745309300',
-    imageUrl2: 'https://hokmakeup.com/cdn/shop/files/makeup-revolution-blush-icon-palette-910294.webp?v=1745309300',
+    name: "Mascara Volume Black",
+    description: "Introducing Revolution Introducing Revolution",
+    price: "$18.00",
+    imageUrl:
+      "https://hokmakeup.com/cdn/shop/files/makeup-revolution-blush-icon-palette-491846.jpg?v=1745309300",
+    imageUrl2:
+      "https://hokmakeup.com/cdn/shop/files/makeup-revolution-blush-icon-palette-910294.webp?v=1745309300",
   },
   {
     id: 4,
-    name: 'Blush Pink Glow',
-    description: 'Introducing Revolution Introducing Revolution',
-    price: '$20.00',
-    originalPrice: '$24.00',
-    discount: '15% off',
-    imageUrl: 'https://hokmakeup.com/cdn/shop/files/81555964986_1.jpg?v=1745309263',
-    shades: ['#FFB6C1', '#FF69B4', '#DB7093'],
+    name: "Blush Pink Glow",
+    description: "Introducing Revolution Introducing Revolution",
+    price: "$20.00",
+    originalPrice: "$24.00",
+    discount: "15% off",
+    imageUrl:
+      "https://hokmakeup.com/cdn/shop/files/81555964986_1.jpg?v=1745309263",
+    shades: ["#FFB6C1", "#FF69B4", "#DB7093"],
   },
 ];
 
 const ProductGrid: React.FC<ProductGridProps> = ({ sortOption }) => {
   const sortedProducts = [...mockProducts].sort((a, b) => {
-    const aPrice = parseFloat(a.price.replace('$', '')) || 0;
-    const bPrice = parseFloat(b.price.replace('$', '')) || 0;
+    const aPrice = parseFloat(a.price.replace("$", "")) || 0;
+    const bPrice = parseFloat(b.price.replace("$", "")) || 0;
     switch (sortOption) {
-      case 'lowToHigh':
+      case "lowToHigh":
         return aPrice - bPrice;
-      case 'highToLow':
+      case "highToLow":
         return bPrice - aPrice;
-      case 'newest':
+      case "newest":
         return b.id - a.id; // Assuming higher ID means newer
       default:
         return 0; // 'featured' or unknown -> no sorting
@@ -121,9 +128,9 @@ const ProductGrid: React.FC<ProductGridProps> = ({ sortOption }) => {
 
           {/* Product Details */}
           <h3 className="mt-1 text-xs sm:text-sm font-medium text-gray-800 text-left leading-tight">
-            {product.name.split(' ').slice(0, 3).join(' ')}
+            {product.name.split(" ").slice(0, 3).join(" ")}
             <br />
-            {product.name.split(' ').slice(3).join(' ')}
+            {product.name.split(" ").slice(3).join(" ")}
           </h3>
 
           <h3 className="text-xs sm:text-sm text-gray-500">

@@ -12,6 +12,9 @@ import Image1 from "../../../../assets/image/image-1.webp";
 import Image2 from "../../../../assets/image/image-2.webp";
 import Image3 from "../../../../assets/image/image-3.webp";
 import Image4 from "../../../../assets/image/image-4.webp";
+import { useDispatch, useSelector } from "react-redux";
+import { getTotals, incrementCart } from "@/redux/reducers/cartSlice";
+import { RootState } from "@/redux/store";
 
 // Define Product interface for type safety
 interface Product {
@@ -46,7 +49,15 @@ export default function ProductDetailsPage() {
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const dispatch = useDispatch();
+  const { cartItems, cartTotalQuantity, cartTotalAmount } = useSelector(
+    (state: RootState) => state.cart
+  );
 
+  // Update totals whenever cartItems change
+  useEffect(() => {
+    dispatch(getTotals());
+  }, [cartItems, dispatch]);
   const productId = (params.id as string) || searchParams.get("id") || "";
 
   const products: Product[] = [
@@ -327,7 +338,7 @@ export default function ProductDetailsPage() {
                 {quantity}
               </span>
               <button
-                onClick={() => handleQuantityChange(1)}
+                onClick={() => dispatch(incrementCart(product))}
                 className="px-2 py-1 border border-gray-300 rounded-r text-gray-600 hover:bg-gray-100"
                 aria-label="Increase quantity"
               >
