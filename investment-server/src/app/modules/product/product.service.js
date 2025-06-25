@@ -38,3 +38,5 @@ export const ProductService = {
   getProductDetails,
   updateProduct,
 };
+
+// DATABASE_URL=mongodb+srv://booktarikul:x8GxyDDhz6QOyn0e@cluster0.scp6egc.mongodb.net/cosmeticsDB?retryWrites=true&w=majority
