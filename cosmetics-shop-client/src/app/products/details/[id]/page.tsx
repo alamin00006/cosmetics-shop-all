@@ -2,7 +2,7 @@
 
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from "next/image"; // Import Next.js Image component
+import Image from "next/image";
 import ProductThumbnails from "@/components/products/ProductThumbnails";
 import { FaStar, FaTrophy } from "react-icons/fa";
 import Link from "next/link";
@@ -13,42 +13,138 @@ import Image2 from "../../../../assets/image/image-2.webp";
 import Image3 from "../../../../assets/image/image-3.webp";
 import Image4 from "../../../../assets/image/image-4.webp";
 import { useDispatch, useSelector } from "react-redux";
-import { getTotals, incrementCart } from "@/redux/reducers/cartSlice";
+import {
+  addToCart,
+  getTotals,
+  incrementCart,
+  decreaseCart,
+} from "@/redux/reducers/cartSlice";
 import { RootState } from "@/redux/store";
 
-// Define Product interface for type safety
-interface Product {
-  id: string;
+// Define interfaces for type safety
+interface Shade {
   name: string;
-  price: number;
-  image: string;
-  description: string;
-  rating: number;
-  reviews: number;
-  originalPrice?: number;
-  discount?: string;
-  shade?: string;
-  shadeImage?: string;
-  pointsEarned: number;
-  sku: string;
-  category: string;
-  tags: string[];
-  colors: { id: string; name: string; color: string; image: string }[];
-  images: string[];
-  offers: string[];
-  taxInfo?: string;
+  color: string;
+  image_url: string;
 }
 
-// Simulated product data fetch (replace with API call)
+interface Product {
+  name: string;
+  price: number;
+  currency: string;
+  points_earned: number;
+  available_shades: Shade[];
+  description: string;
+  features: string[];
+  ingredients: string[];
+  country_of_origin: string;
+  manufacturer: string;
+  address_of_manufacturer: string;
+  how_to_use: string;
+  shelf_life: string;
+  product_code: string;
+}
+
+interface BrandInfo {
+  founded: number;
+  followers: string;
+  locations: string;
+  orders: string;
+}
+
+interface Certifications {
+  authentic: string;
+  shipping: string;
+  payment: string;
+}
+
+interface CartItem {
+  _id: string;
+  price: number;
+  quantity: number;
+  cartQuantity: number;
+  singleCartTotal: number;
+  selectedShade: Shade;
+  product: Product;
+  brand_info: BrandInfo;
+  certifications: Certifications;
+}
+
+// Simulated product data (replace with API call)
+const productData = {
+  _id: "1",
+  product: {
+    name: "Revolution Pout Lip Oil",
+    price: 1800,
+    currency: "BDT",
+    points_earned: 660,
+    available_shades: [
+      {
+        name: "Shade",
+        color: "Snale",
+        image_url: Image1.src,
+      },
+      {
+        name: "Watermelon Pink",
+        color: "Watermelon Pink",
+        image_url: Image2.src,
+      },
+      {
+        name: "Orange Peach",
+        color: "Orange Peach",
+        image_url: Image3.src,
+      },
+      {
+        name: "Honey Shimmer",
+        color: "Honey Shimmer",
+        image_url: Image4.src,
+      },
+    ],
+    description:
+      "A lightweight lip oil with high-shine finish that shade keeps lips hydrated again and again. Revolution Pout Lip Oil drenches your lips, gloss-free, stick-free.",
+    features: [
+      "Lightweight lip oil",
+      "High-shine finish",
+      "Hydrating formula",
+      "Inspired by vitamin E, cherry seed oil, and macadamia oil",
+      "Seven shimmering shades",
+    ],
+    ingredients: [
+      "Shade - a subtle sheen with dark flecks",
+      "Watermelon Pink - a subtle light pink",
+      "Orange Peach - a high-shine orange",
+      "Honey Shimmer - a subtle sheen with gold flecks",
+    ],
+    country_of_origin: "China",
+    manufacturer: "Revolution Beauty",
+    address_of_manufacturer:
+      "Unit 4B, Sheet Glass Road, Culvert, Queensborough, NE13 9JS",
+    how_to_use: "Apply to lips as needed.",
+    shelf_life: "24 Months",
+    product_code: "REV12345",
+  },
+  brand_info: {
+    founded: 2012,
+    followers: "2K+",
+    locations: "25+",
+    orders: "10M+",
+  },
+  certifications: {
+    authentic: "100% Authentic",
+    shipping: "Free Shipping",
+    payment: "Secured Payment",
+  },
+};
+
 export default function ProductDetailsPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [mainImage, setMainImage] = useState<string>("");
-  const [quantity, setQuantity] = useState<number>(1);
-  const [selectedColor, setSelectedColor] = useState<string>("");
+  const [selectedShade, setSelectedShade] = useState<Shade | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const [displayQuantity, setDisplayQuantity] = useState<number>(1); // Local state for UI quantity
   const dispatch = useDispatch();
   const { cartItems, cartTotalQuantity, cartTotalAmount } = useSelector(
     (state: RootState) => state.cart
@@ -58,120 +154,86 @@ export default function ProductDetailsPage() {
   useEffect(() => {
     dispatch(getTotals());
   }, [cartItems, dispatch]);
-  const productId = (params.id as string) || searchParams.get("id") || "";
 
-  const products: Product[] = [
-    {
-      id: "1",
-      name: "I Heart Revolution Bath & Body Gift Set Trio – Tropical Caramel & Blossom Bloom",
-      price: 1350,
-      image: Image1.src, // Fallback main image
-      description: "A luxurious bath and body gift set with tropical scents.",
-      rating: 0,
-      reviews: 0,
-      originalPrice: 1500,
-      discount: "10% OFF",
-      shade: "Blossom Bloom",
-      shadeImage: "https://via.placeholder.com/24/FFB6C1/000000?text=B",
-      pointsEarned: 1350,
-      sku: "SET789",
-      category: "Gift Sets",
-      tags: ["Bath", "Body", "Tropical"],
-      colors: [
-        {
-          id: "blue-401",
-          name: "Blue-401",
-          color: "#4682B4",
-          image: Image1.src,
-        },
-        {
-          id: "pink-402",
-          name: "Pink-402",
-          color: "#FF69B4",
-          image: Image2.src,
-        },
-        {
-          id: "orange-403",
-          name: "Orange-403",
-          color: "#FFA500",
-          image: Image3.src,
-        },
-        {
-          id: "purple-404",
-          name: "Purple-404",
-          color: "#800080",
-          image: Image4.src,
-        },
-        {
-          id: "yellow-405",
-          name: "Yellow-405",
-          color: "#FFFF00",
-          image: Image4.src,
-        },
-        {
-          id: "green-406",
-          name: "Green-406",
-          color: "#32CD32",
-          image: Image4.src,
-        },
-        {
-          id: "white-407",
-          name: "White-407",
-          color: "#FFFFFF",
-          image: Image4.src,
-        },
-        { id: "red-408", name: "Red-408", color: "#FF0000", image: Image2.src },
-      ],
-      images: [Image1.src, Image2.src, Image3.src, Image4.src],
-      offers: [
-        "Extra ₹100 OFF on orders ₹750+",
-        "Extra ₹150 OFF on orders ₹1200+",
-        "Extra ₹250 OFF on orders ₹1600+",
-        "Offers will be applied at checkout",
-      ],
-      taxInfo: "Inclusive of all taxes",
-    },
-  ];
+  const productId = (params.id as string) || searchParams.get("id") || "";
 
   useEffect(() => {
     async function loadProduct() {
-      const fetchedProduct = products.find((p) => p.id === productId);
-
-      setProduct(products[0]); // Use the first product for demonstration
-      setSelectedColor(products[0].colors[0]?.id || "");
-      setMainImage(products[0].colors[0]?.image || products[0].images[0] || "");
+      // Simulate fetching product by ID (replace with API call)
+      setProduct(productData.product);
+      setSelectedShade(productData.product.available_shades[0] || null);
+      setMainImage(
+        productData.product.available_shades[0]?.image_url || Image1.src
+      );
       setCurrentImageIndex(0);
+      setDisplayQuantity(1); // Reset quantity on page load
     }
 
     loadProduct();
   }, [productId]);
 
+  // Update displayQuantity when shade changes or cart updates
+  useEffect(() => {
+    const currentCartItem = cartItems.find(
+      (item) =>
+        item._id === productId &&
+        item.selectedShade.name === selectedShade?.name
+    );
+    setDisplayQuantity(currentCartItem ? currentCartItem.cartQuantity : 1);
+  }, [selectedShade, cartItems, productId]);
+
   const handleThumbnailClick = (image: string) => {
     if (product) {
-      const index = product.images.indexOf(image);
+      const index = product.available_shades.findIndex(
+        (shade) => shade.image_url === image
+      );
       setMainImage(image);
       setCurrentImageIndex(index !== -1 ? index : 0);
+      setSelectedShade(product.available_shades[index]);
     }
   };
 
   const handleQuantityChange = (change: number) => {
-    setQuantity((prev) => Math.max(1, prev + change));
+    if (!selectedShade || !product) return;
+
+    const newQuantity = Math.max(1, displayQuantity + change); // Ensure quantity doesn't go below 1
+    setDisplayQuantity(newQuantity);
+
+    const cartItem: CartItem = {
+      _id: productId,
+      price: product.price,
+      quantity: 100, // Default stock quantity, adjust as needed
+      cartQuantity: newQuantity, // Use the updated quantity
+      singleCartTotal: product.price * newQuantity,
+      selectedShade,
+      product,
+      brand_info: productData.brand_info,
+      certifications: productData.certifications,
+    };
+
+    if (change > 0) {
+      dispatch(incrementCart(cartItem));
+    } else if (change < 0) {
+      dispatch(decreaseCart(cartItem));
+    }
   };
 
-  const handleColorChange = (colorId: string) => {
-    setSelectedColor(colorId);
-    const selectedColorObj = product?.colors.find((c) => c.id === colorId);
-    if (selectedColorObj) {
-      setMainImage(selectedColorObj.image);
-      setCurrentImageIndex(0); // Reset index for color-specific image
-    }
+  const handleShadeChange = (shade: Shade) => {
+    setSelectedShade(shade);
+    setMainImage(shade.image_url);
+    setCurrentImageIndex(
+      product?.available_shades.findIndex((s) => s.name === shade.name) || 0
+    );
+    // Quantity will be updated via useEffect based on the new selected shade
   };
 
   const handleNextImage = () => {
     if (product) {
-      const newIndex = (currentImageIndex + 1) % product.images.length;
+      const newIndex =
+        (currentImageIndex + 1) % product.available_shades.length;
       setCurrentImageIndex(newIndex);
-      setMainImage(product.images[newIndex]);
+      setMainImage(product.available_shades[newIndex].image_url);
+      setSelectedShade(product.available_shades[newIndex]);
     }
   };
 
@@ -179,10 +241,35 @@ export default function ProductDetailsPage() {
     if (product) {
       const newIndex =
         currentImageIndex === 0
-          ? product.images.length - 1
+          ? product.available_shades.length - 1
           : currentImageIndex - 1;
       setCurrentImageIndex(newIndex);
-      setMainImage(product.images[newIndex]);
+      setMainImage(product.available_shades[newIndex].image_url);
+      setSelectedShade(product.available_shades[newIndex]);
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (!selectedShade) {
+      alert("Please select a shade before adding to cart.");
+      return;
+    }
+
+    if (product) {
+      const cartItem: CartItem = {
+        _id: productId,
+        price: product.price,
+        quantity: 100, // Default stock quantity, adjust as needed
+        cartQuantity: displayQuantity, // Use the current UI quantity
+        singleCartTotal: product.price * displayQuantity,
+        selectedShade,
+        product,
+        brand_info: productData.brand_info,
+        certifications: productData.certifications,
+      };
+
+      dispatch(addToCart(cartItem));
+      dispatch(getTotals());
     }
   };
 
@@ -193,16 +280,15 @@ export default function ProductDetailsPage() {
   const accordionItems = [
     {
       title: "Details",
-      content:
-        "Free shipping on orders above ₹799. Delivery within 3-5 business days.",
+      content: product.description,
     },
     {
       title: "How To Use",
-      content: "Use during your bath routine for a luxurious experience.",
+      content: product.how_to_use,
     },
     {
       title: "Ingredients",
-      content: "Natural extracts, essential oils, and moisturizing agents.",
+      content: product.ingredients.join(", "),
     },
   ];
 
@@ -228,7 +314,9 @@ export default function ProductDetailsPage() {
           </div>
           <div className="mt-4">
             <ProductThumbnails
-              thumbnails={product.images}
+              thumbnails={product.available_shades.map(
+                (shade) => shade.image_url
+              )}
               onThumbnailClick={handleThumbnailClick}
               mainImage={mainImage}
             />
@@ -244,39 +332,29 @@ export default function ProductDetailsPage() {
             {[...Array(5)].map((_, i) => (
               <FaStar
                 key={i}
-                className={`w-4 h-4 ${i < Math.floor(product.rating) ? "text-yellow-400" : "text-gray-300"}`}
+                className={`w-4 h-4 ${
+                  i < Math.floor(0) ? "text-yellow-400" : "text-gray-300"
+                }`} // Hardcoded rating as 0 per your data
               />
             ))}
-            <span className="ml-2 text-sm text-gray-500">
-              (
-              {product.reviews === 0
-                ? "No reviews"
-                : `${product.reviews} reviews`}
-              )
-            </span>
+            <span className="ml-2 text-sm text-gray-500">(No reviews)</span>
           </div>
 
           {/* Price and Discount */}
           <div className="flex items-center gap-2 mb-4">
             <span className="text-xl font-semibold text-gray-800">
-              ₹{product.price}
+              {product.currency} {product.price}
             </span>
-            {product.originalPrice && (
-              <span className="text-sm text-gray-500 line-through">
-                ₹{product.originalPrice}
-              </span>
-            )}
-            {product.discount && (
-              <span className="text-sm text-pink-500">{product.discount}</span>
-            )}
-            <span className="text-xs text-gray-500">{product.taxInfo}</span>
+            <span className="text-xs text-gray-500">
+              Inclusive of all taxes
+            </span>
           </div>
 
           {/* Points Earned */}
           <div className="flex items-center mb-4">
             <FaTrophy className="w-4 h-4 text-yellow-500 mr-2" />
             <span className="text-sm text-gray-600">
-              Earn {product.pointsEarned} points on this purchase.{" "}
+              Earn {product.points_earned} points on this purchase.{" "}
               <Link href="#" className="text-blue-500 hover:underline">
                 Learn more
               </Link>
@@ -286,22 +364,20 @@ export default function ProductDetailsPage() {
           {/* Shade Selection */}
           <div className="mb-4">
             <h3 className="text-sm font-medium text-gray-600 mb-2">
-              Shade:{" "}
-              {product.colors.find((c) => c.id === selectedColor)?.name ||
-                "Select a shade"}
+              Shade: {selectedShade?.name || "Select a shade"}
             </h3>
             <div className="flex gap-2">
-              {product.colors.map((color) => (
+              {product.available_shades.map((shade) => (
                 <button
-                  key={color.id}
-                  onClick={() => handleColorChange(color.id)}
+                  key={shade.name}
+                  onClick={() => handleShadeChange(shade)}
                   className={`w-6 h-6 rounded-full border-2 ${
-                    selectedColor === color.id
+                    selectedShade?.name === shade.name
                       ? "border-black"
                       : "border-transparent"
                   }`}
-                  style={{ backgroundColor: color.color }}
-                  aria-label={`Select ${color.name}`}
+                  style={{ backgroundColor: shade.color }}
+                  aria-label={`Select ${shade.name}`}
                 />
               ))}
             </div>
@@ -313,7 +389,12 @@ export default function ProductDetailsPage() {
               Available Offers
             </summary>
             <div className="text-sm text-gray-600 mt-2">
-              {product.offers.map((offer, index) => (
+              {[
+                "Extra ৳100 OFF on orders ৳750+",
+                "Extra ৳150 OFF on orders ৳1200+",
+                "Extra ৳250 OFF on orders ৳1600+",
+                "Offers will be applied at checkout",
+              ].map((offer, index) => (
                 <p
                   key={index}
                   className={index === 3 ? "text-xs text-gray-500 mt-1" : ""}
@@ -335,10 +416,10 @@ export default function ProductDetailsPage() {
                 -
               </button>
               <span className="px-4 py-1 border-t border-b border-gray-300 text-gray-800">
-                {quantity}
+                {displayQuantity}
               </span>
               <button
-                onClick={() => dispatch(incrementCart(product))}
+                onClick={() => handleQuantityChange(1)}
                 className="px-2 py-1 border border-gray-300 rounded-r text-gray-600 hover:bg-gray-100"
                 aria-label="Increase quantity"
               >
@@ -347,11 +428,7 @@ export default function ProductDetailsPage() {
             </div>
             <button
               className="w-full bg-black text-white py-2 rounded text-sm font-semibold uppercase hover:bg-gray-800"
-              onClick={() =>
-                console.log(
-                  `Added ${quantity} of ${product.name} (Color: ${selectedColor}) to cart`
-                )
-              }
+              onClick={handleAddToCart}
             >
               ADD TO BAG
             </button>
@@ -363,13 +440,13 @@ export default function ProductDetailsPage() {
               <strong>Description:</strong> {product.description}
             </p>
             <p className="mb-2">
-              <strong>SKU:</strong> {product.sku}
+              <strong>SKU:</strong> {product.product_code}
             </p>
             <p className="mb-2">
-              <strong>Category:</strong> {product.category}
+              <strong>Category:</strong> Lip Care
             </p>
             <p className="mb-2">
-              <strong>Tags:</strong> {product.tags.join(", ")}
+              <strong>Tags:</strong> {product.features.join(", ")}
             </p>
           </div>
 
