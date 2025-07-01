@@ -101,7 +101,7 @@ export default function Home() {
   ];
   return (
     <main>
-      <div>
+      <div className="container mx-auto px-4">
         <Banner />
         <CollectionCarousel />
         <TopPickCarousel />

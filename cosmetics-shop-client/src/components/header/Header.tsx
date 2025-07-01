@@ -30,7 +30,7 @@ const Header = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? "shadow-md bg-white" : ""}`}
+      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? "shadow-sm bg-white" : ""}`}
     >
       <TopHeader />
       <MiddleHeader toggleMobileMenu={toggleMobileMenu} />
