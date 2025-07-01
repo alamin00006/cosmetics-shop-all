@@ -20,20 +20,8 @@ export const updateCategory = async (id, updateData) => {
   );
 };
 
-export const updateCategoryIndex = async (updateData) => {
-  const operations = updateData.map((item, index) => ({
-    updateOne: {
-      filter: { _id: item._id },
-      update: { $set: { index } }, // backend assigns the index
-    },
-  }));
-
-  await Category.bulkWrite(operations);
-};
-
 export const CategoryService = {
   createCategory,
   getCategories,
   updateCategory,
-  updateCategoryIndex,
 };

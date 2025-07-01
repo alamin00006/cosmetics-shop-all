@@ -1,7 +1,6 @@
 import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync.js";
 import sendResponse from "../../../shared/sendResponse.js";
-
 import { CategoryService } from "./category.service.js";
 
 const createCategory = catchAsync(async (req, res) => {
@@ -36,22 +35,9 @@ const updateCategory = catchAsync(async (req, res) => {
     message: "Category Updated",
   });
 });
-const updateCategoryIndex = catchAsync(async (req, res) => {
-  // const updateData = req.body;
-
-  console.log("hello");
-  await CategoryService.updateCategoryIndex(updateData);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Category Updated",
-  });
-});
 
 export const CategoryController = {
   createCategory,
   getCategories,
   updateCategory,
-  updateCategoryIndex,
 };

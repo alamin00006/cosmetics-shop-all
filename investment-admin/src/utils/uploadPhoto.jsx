@@ -1,7 +1,6 @@
 import toast from "react-hot-toast";
-
-import { isValidPhoto } from "./isValidPhoto";
 import { imgBbApi } from "./imgBbApi";
+import { isValidPhoto } from "./isValidPhoto";
 
 export const uploadImageToImgBB = async (file) => {
   // Check file size (5MB limit)
@@ -30,7 +29,7 @@ export const uploadImageToImgBB = async (file) => {
 
     if (imgData.success) {
       const imageUrl = imgData.data.url;
-      // toast.success("Image uploaded successfully!");
+      toast.success("Image uploaded successfully!");
       return imageUrl;
     } else {
       toast.error("Failed to upload image");
@@ -38,7 +37,6 @@ export const uploadImageToImgBB = async (file) => {
     }
   } catch (error) {
     toast.error("An error occurred during image upload");
-
     return null;
   }
 };

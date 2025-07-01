@@ -1,12 +1,13 @@
 "use client";
+import TextEditor from "@/components/textEditor/TextEditor";
 import { getBaseUrl } from "@/helpers/config/envConfig";
-import { imgBbApi } from "@/utils/imgBbApi";
-import { isValidPhoto } from "@/utils/isValidPhoto";
+
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 export default function ProductUploadForm() {
+  const [aboutProduct, setAboutProduct] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -150,7 +151,7 @@ export default function ProductUploadForm() {
   const hasMultipleShades = true;
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+    <div className=" mt-10 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-6 text-center">Upload Product</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -344,22 +345,6 @@ export default function ProductUploadForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-              rows="3"
-            />
-          </div>
-          <div>
-            <label
               htmlFor="features"
               className="block text-sm font-medium text-gray-700"
             >
@@ -486,6 +471,38 @@ export default function ProductUploadForm() {
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
             />
           </div>
+          <div>
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Description
+            </label>
+            <TextEditor
+              setEditorValue={setAboutProduct}
+              editorValue={aboutProduct}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Category
+            </label>
+            <select
+              // value={product.categoryId}
+              // onChange={(e) =>
+              //   setProduct({ ...product, categoryId: e.target.value })
+              // }
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              required
+            >
+              <option value="">Select Category</option>
+              {/* {subCategories.map((sub) => (
+                <option key={sub._id} value={sub._id}>
+                  {sub.name}
+                </option>
+              ))} */}
+            </select>
+          </div>
         </div>
         <button
           type="submit"
@@ -497,42 +514,3 @@ export default function ProductUploadForm() {
     </div>
   );
 }
-
-export const uploadImageToImgBB = async (file) => {
-  // Check file size (5MB limit)
-  if (file.size > 5000000) {
-    toast.error("Picture size exceeds 5MB, upload not allowed");
-    return null;
-  }
-  // Validate check
-  if (!isValidPhoto(file)) {
-    toast.error("Product picture is not valid");
-    return null;
-  }
-
-  try {
-    const formData = new FormData();
-    formData.append("image", file);
-
-    const url = `https://api.imgbb.com/1/upload?key=${imgBbApi}`;
-
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-    });
-
-    const imgData = await response.json();
-
-    if (imgData.success) {
-      const imageUrl = imgData.data.url;
-      toast.success("Image uploaded successfully!");
-      return imageUrl;
-    } else {
-      toast.error("Failed to upload image");
-      return null;
-    }
-  } catch (error) {
-    toast.error("An error occurred during image upload");
-    return null;
-  }
-};

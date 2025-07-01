@@ -1,7 +1,6 @@
 import express from "express";
 import { companyRoutes } from "../modules/company/company.route.js";
 
-import { CategoryRoutes } from "../modules/projectCategory/category.route.js";
 import { AdminUserRoutes } from "../modules/adminUser/adminUser.route.js";
 import { UserRoutes } from "../modules/user/user.route.js";
 import { marketBannerRoutes } from "../modules/marketBanner/marketBanner.route.js";
@@ -13,6 +12,7 @@ import { ContactUsRoutes } from "../modules/contactUs/contact.route.js";
 
 import { OtpRoutes } from "../modules/userOtp/userOtp.route.js";
 import { ProductRoutes } from "../modules/product/product.route.js";
+import { CategoryRoutes } from "../modules/category/category.route.js";
 
 const router = express.Router();
 

@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
-const productSchema = new mongoose.Schema({
+const { Schema } = mongoose;
+
+const productSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -70,6 +72,16 @@ const productSchema = new mongoose.Schema({
     required: true,
     min: 0,
     default: 0,
+  },
+  brand: {
+    type: Schema.Types.ObjectId,
+    ref: "Brand",
+    required: true,
+  },
+  categoryId: {
+    type: Schema.Types.ObjectId,
+    ref: "SubCategory", // References the subcategory's _id
+    required: true,
   },
   brandInfo: {
     founded: {
