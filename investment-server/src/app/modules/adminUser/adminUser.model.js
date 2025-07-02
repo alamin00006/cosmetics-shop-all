@@ -51,7 +51,7 @@ const adminUserSchema = mongoose.Schema(
     piHRId: {
       type: String,
       // required: true,
-      unique: true,
+      // unique: true,
     },
   },
   {

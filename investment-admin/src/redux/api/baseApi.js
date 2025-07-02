@@ -25,6 +25,8 @@ export const baseApi = createApi({
     "waiting-list",
     "nominee",
     "category",
+    "main-categories",
+    "subcategories",
     "company-bank",
   ],
 });

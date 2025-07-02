@@ -1,4 +1,4 @@
-import CategoryList from "@/components/projectCategories/CategoryList";
+import CategoryList from "@/components/categories/CategoryList";
 
 export const metadata = {
   title: "Dashboard | Add Category",

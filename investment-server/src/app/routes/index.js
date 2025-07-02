@@ -12,7 +12,9 @@ import { ContactUsRoutes } from "../modules/contactUs/contact.route.js";
 
 import { OtpRoutes } from "../modules/userOtp/userOtp.route.js";
 import { ProductRoutes } from "../modules/product/product.route.js";
+import { MainCategoryRoutes } from "../modules/mainCategory/mainCategory.route.js";
 import { CategoryRoutes } from "../modules/category/category.route.js";
+import { SubCategoryRoutes } from "../modules/subCategory/subCategory.route.js";
 
 const router = express.Router();
 
@@ -21,10 +23,17 @@ const moduleRoutes = [
     path: "/company",
     route: companyRoutes,
   },
-
+  {
+    path: "/main-categories",
+    route: MainCategoryRoutes,
+  },
   {
     path: "/category",
     route: CategoryRoutes,
+  },
+  {
+    path: "/subcategories",
+    route: SubCategoryRoutes,
   },
 
   {

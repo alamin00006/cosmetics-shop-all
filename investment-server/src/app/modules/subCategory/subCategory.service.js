@@ -6,7 +6,7 @@ export const createSubCategory = async (subCategoryData) => {
   return result;
 };
 export const getSubCategories = async () => {
-  const subCategories = await SubCategory.find({}).populate("categoryId");
+  const subCategories = await SubCategory.find({});
   return subCategories;
 };
 export const updateSubCategory = async (id, updateData) => {

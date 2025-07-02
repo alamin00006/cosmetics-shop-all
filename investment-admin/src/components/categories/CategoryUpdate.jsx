@@ -8,6 +8,7 @@ const CategoryUpdate = ({
   showEditModal,
   setShowEditModal,
   selectCategory,
+  route,
 }) => {
   const handleCloseModal = () => setShowEditModal(false);
 
@@ -23,7 +24,7 @@ const CategoryUpdate = ({
     try {
       setLoading(true);
       const { data } = await axios.patch(
-        `${getBaseUrl()}/category/${selectCategory?._id}`,
+        `${getBaseUrl()}/${route}/${selectCategory?._id}`,
         categoryData
       );
       toast.success(data?.message);

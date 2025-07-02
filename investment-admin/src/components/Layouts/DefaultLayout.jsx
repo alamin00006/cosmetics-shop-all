@@ -12,19 +12,19 @@ export default function DefaultLayout({ children }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
-  // const userLoggedIn = isLoggedIn();
+  const userLoggedIn = isLoggedIn();
 
-  // useEffect(() => {
-  //   if (!userLoggedIn) {
-  //     router.push("/login");
-  //   } else {
-  //     setIsLoading(false);
-  //   }
-  // }, [userLoggedIn, router]);
+  useEffect(() => {
+    if (!userLoggedIn) {
+      router.push("/login");
+    } else {
+      setIsLoading(false);
+    }
+  }, [userLoggedIn, router]);
 
-  // if (isLoading) {
-  //   return <Loading />;
-  // }
+  if (isLoading) {
+    return <Loading />;
+  }
 
   const scrollToTop = () => {
     window.scrollTo({

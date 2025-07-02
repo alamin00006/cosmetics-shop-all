@@ -2,11 +2,11 @@ import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync.js";
 import sendResponse from "../../../shared/sendResponse.js";
 
-import { CategoryService } from "./mainCategory.service.js";
+import { MainCategoryService } from "./mainCategory.service.js";
 
 const createCategory = catchAsync(async (req, res) => {
   const categoryData = req.body;
-  await CategoryService.createCategory(categoryData);
+  await MainCategoryService.createCategory(categoryData);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -16,7 +16,7 @@ const createCategory = catchAsync(async (req, res) => {
 });
 
 const getCategories = catchAsync(async (req, res) => {
-  const categories = await CategoryService.getCategories();
+  const categories = await MainCategoryService.getCategories();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -29,7 +29,7 @@ const updateCategory = catchAsync(async (req, res) => {
   const id = req.params.id;
   const { ...updateData } = req.body;
 
-  await CategoryService.updateCategory(id, updateData);
+  await MainCategoryService.updateCategory(id, updateData);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
