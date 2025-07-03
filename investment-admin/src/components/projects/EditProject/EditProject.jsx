@@ -10,7 +10,7 @@ import EditProjectInfo from "./EditProjectInfo";
 import EditFinancials from "./EditFinancials";
 import EditTimeline from "./EditTimeline";
 import EditUploadMedia from "./EditUploadMedia";
-import { useGetProjectsByIdQuery } from "@/redux/api/projectsApi";
+import { useGetProjectsByIdQuery } from "@/redux/api/productsApi";
 import { multipleImageUpload } from "@/utils/multipleImageUpload";
 import LoadingState from "@/components/LoadingState/LoadingState";
 import { decrypt } from "@/utils/decrypt";

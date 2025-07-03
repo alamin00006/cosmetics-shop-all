@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/projectsApi";
+import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/productsApi";
 import { useGetInvestmentsQuery } from "@/redux/api/investmentApi";
 import { useGetUserQuery } from "@/redux/api/authApi";
 import { USER_ROLE } from "@/constants/role";

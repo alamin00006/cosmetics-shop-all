@@ -1,29 +1,28 @@
 import { baseApi } from "./baseApi";
 
-const PROJECT_URL = "/project";
+const PROJECT_URL = "/products";
 
 const projectApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getProjectsByCompanyOrPR: build.query({
+    getProducts: build.query({
       query: (arg) => ({
-        url: `${PROJECT_URL}/company-projects`,
+        url: `${PROJECT_URL}`,
         method: "GET",
         params: arg,
       }),
-      providesTags: ["projects"],
+      providesTags: ["products"],
     }),
-    getProjectsById: build.query({
+    getProductsById: build.query({
       query: (id) => ({
         url: `${PROJECT_URL}/${id}`,
         method: "GET",
       }),
-      providesTags: ["projects"],
+      providesTags: ["products"],
     }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetProjectsByCompanyOrPRQuery, useGetProjectsByIdQuery } =
-  projectApi;
+export const { useGetProductsQuery, useGetProductsByIdQuery } = projectApi;
 
 export default projectApi;

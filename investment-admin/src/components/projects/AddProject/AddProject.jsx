@@ -1,19 +1,25 @@
 "use client";
 import TextEditor from "@/components/textEditor/TextEditor";
 import { getBaseUrl } from "@/helpers/config/envConfig";
-
+import {
+  useGetProductCategoriesQuery,
+  useGetProductMainCategoriesQuery,
+  useGetProductSubCategoriesQuery,
+} from "@/redux/api/productCategoryApi";
+import { multipleImageUpload } from "@/utils/multipleImageUpload";
+import { uploadImageToImgBB } from "@/utils/uploadPhoto";
 import axios from "axios";
-import { useState } from "react";
-import toast from "react-hot-toast";
-
+import { useState, useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 export default function ProductUploadForm() {
   const [aboutProduct, setAboutProduct] = useState("");
+  const [multipleShades, setMultipleShades] = useState("");
+  const [files, setFiles] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     price: "",
     currency: "BDT",
-    pointsEarned: "",
-    shade: "",
     availableShades: [{ name: "", color: "", image: null }],
     description: "",
     features: "",
@@ -25,8 +31,33 @@ export default function ProductUploadForm() {
     shelfLife: "",
     productCode: "",
     quantity: "",
-    productImage: null,
+    mainCategoryId: "",
+    categoryId: "",
+    subCategoryId: "",
   });
+
+  const {
+    data: categories,
+    error: projectGetError,
+    isLoading,
+    refetch: productCategoryRefetch,
+  } = useGetProductCategoriesQuery();
+
+  // Get Main Categories
+  const {
+    data: MainCategories,
+    error: projectMainCategoriesError,
+    isLoading: projectMainCategoryLoading,
+    refetch: productMainCategoriesRefetch,
+  } = useGetProductMainCategoriesQuery();
+
+  // Get Sub Categories
+  const {
+    data: subCategories,
+    error: subCategoriesError,
+    isLoading: subCategoriesLoading,
+    refetch: subCategoryRefetch,
+  } = useGetProductSubCategoriesQuery();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,7 +78,6 @@ export default function ProductUploadForm() {
   const handleImageChange = async (e, index) => {
     const file = e.target.files[0];
     if (index !== null) {
-      // Handle shade image upload
       const imageUrl = await uploadImageToImgBB(file);
       if (imageUrl) {
         setFormData((prevData) => {
@@ -56,15 +86,24 @@ export default function ProductUploadForm() {
           return { ...prevData, availableShades: updatedShades };
         });
       }
+    }
+  };
+  // Check File Size Check
+  const checkFileSize = (file) => {
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error(`File size exceeds 5 MB. Please upload a smaller file.`);
+      return false;
+    }
+    return true;
+  };
+  const handleFileChange = (setter) => (e) => {
+    const files = Array.from(e.target.files);
+    const validFiles = files.filter(checkFileSize);
+
+    if (validFiles.length > 0) {
+      setter(validFiles);
     } else {
-      // Handle product image upload
-      const imageUrl = await uploadImageToImgBB(file);
-      if (imageUrl) {
-        setFormData((prevData) => ({
-          ...prevData,
-          productImage: imageUrl,
-        }));
-      }
+      e.target.value = "";
     }
   };
 
@@ -89,69 +128,81 @@ export default function ProductUploadForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Prepare data for submission (no FormData needed for API since images are URLs)
-    const submissionData = { ...formData };
-
-    // Ensure all images are uploaded before submission
-    const allImagesUploaded = await Promise.all(
-      formData.availableShades.map(async (shade, index) => {
-        if (shade.image === null && formData.availableShades.length > 1) {
-          const fileInput = document.querySelector(
-            `input[type="file"]:nth-of-type(${index + 1})`
-          );
-          if (fileInput && fileInput.files[0]) {
-            const imageUrl = await uploadImageToImgBB(fileInput.files[0]);
-            if (imageUrl) {
-              submissionData.availableShades[index].image = imageUrl;
-            } else {
-              return false;
-            }
-          }
-        }
-        return true;
-      })
-    );
-
     if (
-      formData.productImage === null &&
-      !formData.availableShades.some((s) => s.image) &&
-      document.querySelector("input#productImage")?.files[0]
+      !formData.name ||
+      !formData.price ||
+      !formData.quantity ||
+      !formData.subCategoryId
     ) {
-      const imageUrl = await uploadImageToImgBB(
-        document.querySelector("input#productImage").files[0]
-      );
-      if (imageUrl) {
-        submissionData.productImage = imageUrl;
-      } else {
-        return;
-      }
+      toast.error("Please fill in all required fields");
+      return;
     }
 
-    if (allImagesUploaded.every(Boolean)) {
-      try {
-        await axios.post(`${getBaseUrl()}/products`, submissionData);
+    const submissionData = { ...formData, description: aboutProduct };
 
-        // const response = await fetch("/api/products", {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify(submissionData),
-        // });
+    // const allShadesValid = submissionData.availableShades.every(
+    //   (shade) => shade.image
+    // );
 
-        toast.success("Product uploaded successfully!");
-      } catch (error) {
-        console.log(error);
-        toast.error("An error occurred during product upload");
-      }
-    } else {
-      toast.error("Please ensure all images are uploaded successfully");
+    // const productImagesValid =
+    //   multipleShades === "No" ||
+    //   submissionData.productImage.length > 0 ||
+    //   (await multipleImageUpload(
+    //     document.querySelector("input#productImage")?.files
+    //   ));
+
+    // if (!allShadesValid) {
+    //   toast.error("Please upload images for all shades");
+    //   return;
+    // }
+
+    // if (!productImagesValid) {
+    //   toast.error("Please upload at least one product image");
+    //   return;
+    // }
+
+    try {
+      const productImageUrls = await multipleImageUpload(files);
+      await axios.post(`${getBaseUrl()}/products`, {
+        ...submissionData,
+        productImage: productImageUrls?.map((img) => ({
+          title: null,
+          image: img,
+        })),
+      });
+      toast.success("Product uploaded successfully!");
+      setFormData({
+        name: "",
+        price: "",
+        currency: "BDT",
+        availableShades: [{ name: "", color: "", image: null }],
+        description: "",
+        features: "",
+        ingredients: "",
+        countryOfOrigin: "",
+        manufacturer: "",
+        addressOfManufacturer: "",
+        howToUse: "",
+        shelfLife: "",
+        productCode: "",
+        quantity: "",
+        mainCategoryId: "",
+        categoryId: "",
+        subCategoryId: "",
+      });
+      setAboutProduct("");
+      setMultipleShades("");
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "An error occurred during product upload";
+      console.error("Product upload failed:", error);
+      toast.error(errorMessage);
     }
   };
 
-  const hasMultipleShades = true;
-
   return (
-    <div className=" mt-10 p-6 bg-white rounded-lg shadow-md">
+    <div className="mt-10 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-6 text-center">Upload Product</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -169,6 +220,8 @@ export default function ProductUploadForm() {
               value={formData.name}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+              required
+              aria-label="Product Name"
             />
           </div>
           <div>
@@ -186,6 +239,7 @@ export default function ProductUploadForm() {
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
               required
+              aria-label="Price"
             />
           </div>
           <div>
@@ -201,49 +255,40 @@ export default function ProductUploadForm() {
               value={formData.currency}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+              aria-label="Currency"
             >
               <option value="BDT">BDT</option>
-              <option value="PKR">PKR</option>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
             </select>
           </div>
           <div>
             <label
-              htmlFor="pointsEarned"
+              htmlFor="multipleShades"
               className="block text-sm font-medium text-gray-700"
             >
-              Points Earned
+              Multiple Shades
             </label>
-            <input
-              type="number"
-              id="pointsEarned"
-              name="pointsEarned"
-              value={formData.pointsEarned}
-              onChange={handleChange}
+            <select
+              id="multipleShades"
+              value={multipleShades}
+              onChange={(e) => setMultipleShades(e.target.value)}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="shade"
-              className="block text-sm font-medium text-gray-700"
+              aria-label="Multiple Shades"
             >
-              Shade
-            </label>
-            <input
-              type="text"
-              id="shade"
-              name="shade"
-              value={formData.shade}
-              onChange={handleChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-            />
+              <option value="" disabled>
+                Select
+              </option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
           </div>
           <div>
             <label
               htmlFor="quantity"
               className="block text-sm font-medium text-gray-700"
             >
-              Quantity
+              Stock Quantity
             </label>
             <input
               type="number"
@@ -254,11 +299,84 @@ export default function ProductUploadForm() {
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
               required
               min="0"
+              aria-label="Quantity"
             />
+          </div>
+          <div>
+            <label
+              htmlFor="mainCategoryId"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Main Category
+            </label>
+            <select
+              id="mainCategoryId"
+              name="mainCategoryId"
+              value={formData.mainCategoryId}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              required
+              aria-label="Category"
+            >
+              <option value="">Select main Category</option>
+              {MainCategories?.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label
+              htmlFor="categoryId"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Category
+            </label>
+            <select
+              id="categoryId"
+              name="categoryId"
+              value={formData.categoryId}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              required
+              aria-label="Category"
+            >
+              <option value="">Select Category</option>
+              {categories?.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label
+              htmlFor="subCategoryId"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Sub Category
+            </label>
+            <select
+              id="subCategoryId"
+              name="subCategoryId"
+              value={formData.subCategoryId}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              required
+              aria-label="Category"
+            >
+              <option value="">Select sub Category</option>
+              {subCategories?.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <div className="grid grid-cols-1 gap-4">
-          {hasMultipleShades ? (
+          {multipleShades === "Yes" && (
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Available Shades with Images
@@ -278,6 +396,7 @@ export default function ProductUploadForm() {
                         }
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
                         placeholder="Enter shade name"
+                        aria-label={`Shade Name ${index + 1}`}
                       />
                     </div>
                     <div>
@@ -292,6 +411,7 @@ export default function ProductUploadForm() {
                         }
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
                         placeholder="Enter color"
+                        aria-label={`Shade Color ${index + 1}`}
                       />
                     </div>
                     <div>
@@ -303,6 +423,7 @@ export default function ProductUploadForm() {
                         accept="image/*"
                         onChange={(e) => handleImageChange(e, index)}
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                        aria-label={`Shade Image ${index + 1}`}
                       />
                     </div>
                     <button
@@ -310,6 +431,7 @@ export default function ProductUploadForm() {
                       onClick={() => removeShade(index)}
                       className="mt-2 bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
                       disabled={formData.availableShades.length <= 1}
+                      aria-label={`Remove Shade ${index + 1}`}
                     >
                       Remove Shade
                     </button>
@@ -320,11 +442,13 @@ export default function ProductUploadForm() {
                 type="button"
                 onClick={addShade}
                 className="mt-4 bg-green-500 text-white p-2 rounded-md hover:bg-green-600"
+                aria-label="Add Shade"
               >
                 Add Shade
               </button>
             </div>
-          ) : (
+          )}
+          {multipleShades === "No" && (
             <div>
               <label
                 htmlFor="productImage"
@@ -336,8 +460,10 @@ export default function ProductUploadForm() {
                 type="file"
                 id="productImage"
                 accept="image/*"
-                onChange={(e) => handleImageChange(e)}
+                multiple
+                onChange={handleFileChange(setFiles)}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                aria-label="Product Image"
               />
             </div>
           )}
@@ -357,6 +483,7 @@ export default function ProductUploadForm() {
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
               rows="3"
+              aria-label="Features"
             />
           </div>
           <div>
@@ -373,6 +500,7 @@ export default function ProductUploadForm() {
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
               rows="3"
+              aria-label="Ingredients"
             />
           </div>
           <div>
@@ -389,6 +517,7 @@ export default function ProductUploadForm() {
               value={formData.countryOfOrigin}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+              aria-label="Country of Origin"
             />
           </div>
           <div>
@@ -405,6 +534,7 @@ export default function ProductUploadForm() {
               value={formData.manufacturer}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+              aria-label="Manufacturer"
             />
           </div>
           <div>
@@ -421,6 +551,7 @@ export default function ProductUploadForm() {
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
               rows="2"
+              aria-label="Address of Manufacturer"
             />
           </div>
           <div>
@@ -437,6 +568,7 @@ export default function ProductUploadForm() {
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
               rows="2"
+              aria-label="How to Use"
             />
           </div>
           <div>
@@ -453,6 +585,7 @@ export default function ProductUploadForm() {
               value={formData.shelfLife}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+              aria-label="Shelf Life"
             />
           </div>
           <div>
@@ -469,6 +602,7 @@ export default function ProductUploadForm() {
               value={formData.productCode}
               onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+              aria-label="Product Code"
             />
           </div>
           <div>
@@ -481,36 +615,19 @@ export default function ProductUploadForm() {
             <TextEditor
               setEditorValue={setAboutProduct}
               editorValue={aboutProduct}
+              aria-label="Description"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Category
-            </label>
-            <select
-              // value={product.categoryId}
-              // onChange={(e) =>
-              //   setProduct({ ...product, categoryId: e.target.value })
-              // }
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              required
-            >
-              <option value="">Select Category</option>
-              {/* {subCategories.map((sub) => (
-                <option key={sub._id} value={sub._id}>
-                  {sub.name}
-                </option>
-              ))} */}
-            </select>
           </div>
         </div>
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+          aria-label="Upload Product"
         >
           Upload Product
         </button>
       </form>
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }

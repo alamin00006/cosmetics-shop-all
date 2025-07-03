@@ -12,7 +12,7 @@ import ReturnFilter from "./ReturnFilter";
 import { formatDate } from "@/utils/dateConvert";
 
 import { authKey } from "@/constants/storageKey";
-import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/projectsApi";
+import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/productsApi";
 import { useGetReturnsQuery } from "@/redux/api/returnApi";
 import { useGetUserQuery } from "@/redux/api/authApi";
 import { getFromLocalStorage } from "@/utils/local-storage";

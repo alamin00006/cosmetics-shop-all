@@ -7,7 +7,7 @@ import ProfitStatusUpdate from "./ProfitStatusUpdate";
 import SeeProfitDetails from "./SeeProfitDetails";
 import ProfitFilter from "./ProfitFilter";
 import { formatDate } from "@/utils/dateConvert";
-import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/projectsApi";
+import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/productsApi";
 import { useGetProfitsQuery } from "@/redux/api/profitApi";
 import { useGetUserQuery } from "@/redux/api/authApi";
 import { USER_ROLE } from "@/constants/role";

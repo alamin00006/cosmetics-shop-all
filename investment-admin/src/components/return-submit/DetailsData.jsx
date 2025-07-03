@@ -4,7 +4,7 @@ import InvestorTable from "./InvestorTable";
 
 import { authKey } from "@/constants/storageKey";
 import { useGetUserQuery } from "@/redux/api/authApi";
-import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/projectsApi";
+import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/productsApi";
 import { useState } from "react";
 import { USER_ROLE } from "@/constants/role";
 

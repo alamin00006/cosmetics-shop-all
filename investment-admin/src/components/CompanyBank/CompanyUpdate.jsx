@@ -4,7 +4,7 @@ import { USER_ROLE } from "@/constants/role";
 import { authKey } from "@/constants/storageKey";
 import { getBaseUrl } from "@/helpers/config/envConfig";
 import { useGetUserQuery } from "@/redux/api/authApi";
-import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/projectsApi";
+import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/productsApi";
 import { getFromLocalStorage } from "@/utils/local-storage";
 
 import axios from "axios";

@@ -7,7 +7,7 @@ import Filter from "../filters/Filter";
 
 import ProfitSubmitModal from "./ReturnSubmitModal";
 
-import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/projectsApi";
+import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/productsApi";
 
 import { authKey } from "@/constants/storageKey";
 import { useGetUserQuery } from "@/redux/api/authApi";

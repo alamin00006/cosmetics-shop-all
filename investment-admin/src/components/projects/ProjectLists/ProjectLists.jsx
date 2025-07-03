@@ -8,7 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import UpdateProjectStatus from "./UpdateProjectStatus";
 import { formatDate } from "@/utils/dateConvert";
 
-import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/projectsApi";
+import { useGetProductsQuery } from "@/redux/api/productsApi";
 import { useGetAllUsersQuery, useGetUserQuery } from "@/redux/api/authApi";
 import { USER_ROLE } from "@/constants/role";
 import Link from "next/link";
@@ -50,17 +50,18 @@ const ProjectLists = () => {
 
   // Get Projects
   const params = {
-    companyId:
-      userData?.role === USER_ROLE.COMPANY ? userData?.company?._id : "",
-    id: userData?.role === USER_ROLE.PR_MANAGER ? userData?.PRManager?._id : "",
+    // companyId:
+    //   userData?.role === USER_ROLE.COMPANY ? userData?.company?._id : "",
+    // id: userData?.role === USER_ROLE.PR_MANAGER ? userData?.PRManager?._id : "",
   };
 
   const {
-    data: projects,
+    data: products,
     error,
     isLoading,
     refetch,
-  } = useGetProjectsByCompanyOrPRQuery({ ...params });
+  } = useGetProductsQuery({ ...params });
+  console.log(products);
 
   // Handle Status Modal
   const handleShowStatusModal = (project) => {
@@ -73,7 +74,7 @@ const ProjectLists = () => {
     setShowPRModal(true);
   };
 
-  const filteredProjects = projects?.projects?.filter((project) =>
+  const filteredProducts = products?.filter((project) =>
     project.projectTitle
       ?.toLowerCase()
       .startsWith(searchQuery.trim().toLowerCase())
@@ -81,11 +82,11 @@ const ProjectLists = () => {
 
   const indexOfLastProject = currentPage * projectsPerPage;
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-  const currentProjects = filteredProjects?.slice(
+  const currentProjects = filteredProducts?.slice(
     indexOfFirstProject,
     indexOfLastProject
   );
-  const totalPages = Math.ceil(filteredProjects?.length / projectsPerPage);
+  const totalPages = Math.ceil(filteredProducts?.length / projectsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -166,73 +167,67 @@ const ProjectLists = () => {
           <thead>
             <tr className="text-sm">
               <th>No</th>
-              <th>Project</th>
-              <th>Project Title</th>
-              <th>Investment Value</th>
-              <th>Per Share Value</th>
-              <th>Total Share</th>
-              <th>Inv.start Date</th>
-              <th>Inv.end Date</th>
-              <th>First Return Date</th>
+              <th>Product</th>
+              <th>Product Title</th>
+              <th>Price</th>
+              <th>Stock Quantity</th>
               <th className="text-green-600">Featured</th>
               <th className="text-green-600">Publish Status</th>
               <th>Status</th>
-              <th>PR Manager</th>
+
               <th>Details</th>
               {userData?.role !== USER_ROLE.SUPER_ADMIN && <th>Action</th>}
             </tr>
           </thead>
           <tbody>
-            {currentProjects?.map((project, index) => (
-              <tr key={project._id} className="hover:bg-gray-100 border-b">
+            {products?.map((product, index) => (
+              <tr key={product._id} className="hover:bg-gray-100 border-b">
                 <td>{indexOfFirstProject + index + 1}</td>
                 <td>
                   <div className="list-thumb">
                     <Image
                       width={80}
                       height={60}
-                      src={project?.projectPicture?.[0]}
+                      src={product?.projectPicture?.[0]}
                       className="cover"
                       style={{ backgroundPosition: "no-repeat" }}
                       alt="Project Picture"
                     />
                   </div>
                 </td>
-                <td>{project?.projectTitle}</td>
-                <td>Tk {project?.totalProjectValue?.toLocaleString()}</td>
-                <td>Tk {project?.perShareValue?.toLocaleString()}</td>
-                <td>{project?.totalShareValue?.toLocaleString()} Share</td>
-                <td>{formatDate(project?.investmentStartDate)}</td>
-                <td>{formatDate(project?.investmentEndDate)}</td>
-                <td>{formatDate(project?.firstReturnDate)}</td>
+                <td>{product?.name}</td>
+                <td>Tk {product?.price?.toLocaleString()}</td>
+
+                <td>{product?.quantity} pcs</td>
+
                 <td>
-                  <p className="mb-2 text-center"> {project?.isFeatured}</p>
+                  <p className="mb-2 text-center"> {product?.isFeatured}</p>
 
                   <div>
                     <input
                       type="checkbox"
                       className="toggle toggle-success"
-                      checked={project?.isFeatured === "Yes"}
+                      checked={product?.isFeatured === "Yes"}
                       onChange={async (e) => {
                         const newValue = e.target.checked ? "Yes" : "No";
-                        await handleFeatured(project?._id, newValue);
+                        await handleFeatured(product?._id, newValue);
                       }}
                       disabled={userData?.role !== USER_ROLE.SUPER_ADMIN}
                     />
                   </div>
                 </td>
                 <td>
-                  <p className="mb-2 text-center"> {project?.isPublished}</p>
+                  <p className="mb-2 text-center"> {product?.isPublished}</p>
 
                   {userData?.role === USER_ROLE.COMPANY && (
                     <div className="text-center">
                       <input
                         type="checkbox"
                         className="toggle toggle-success"
-                        checked={project?.isPublished === "Yes"}
+                        checked={product?.isPublished === "Yes"}
                         onChange={async (e) => {
                           const newValue = e.target.checked ? "Yes" : "No";
-                          await handlePublish(project?._id, newValue);
+                          await handlePublish(product?._id, newValue);
                         }}
                       />
                     </div>
@@ -241,18 +236,18 @@ const ProjectLists = () => {
                 <td>
                   <span
                     style={{
-                      color: project.status !== "On-Going" ? "red" : "green",
+                      color: product.status !== "On-Going" ? "red" : "green",
                       fontWeight: "bold",
                     }}
                   >
-                    {project.status}
+                    {product.status}
                   </span>
                   <button
                     style={{
                       border: "none",
                       backgroundColor: "transparent",
                     }}
-                    onClick={() => handleShowStatusModal(project)}
+                    onClick={() => handleShowStatusModal(product)}
                     disabled={userData?.role === USER_ROLE.PR_MANAGER}
                   >
                     {userData?.role !== USER_ROLE.PR_MANAGER && (
@@ -262,29 +257,7 @@ const ProjectLists = () => {
                     )}
                   </button>
                 </td>
-                <td>
-                  <span
-                    style={{
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {project.PRManagerDetails?.[0]?.name}
-                  </span>
-                  <button
-                    style={{
-                      border: "none",
-                      backgroundColor: "transparent",
-                    }}
-                    onClick={() => handleShowPRModal(project)}
-                    disabled={userData?.role === USER_ROLE.PR_MANAGER}
-                  >
-                    {userData?.role !== USER_ROLE.PR_MANAGER && (
-                      <FaRegEdit
-                        style={{ cursor: "pointer", marginLeft: "5px" }}
-                      />
-                    )}
-                  </button>
-                </td>
+
                 <td>
                   {/* <button
                     type="button"
@@ -294,7 +267,7 @@ const ProjectLists = () => {
                     <AiOutlineEye style={{ width: "24px", height: "24px" }} />
                   </button> */}
                   <Link
-                    href={`/${project?.projectTitle}/${project?._id}`}
+                    href={`/${product?.projectTitle}/${product?._id}`}
                     className="bg-light bg-gradient border-0"
                     // onClick={() => handleDetailsClick(project)}
                   >
@@ -304,7 +277,7 @@ const ProjectLists = () => {
                 {userData?.role !== USER_ROLE.SUPER_ADMIN && (
                   <td>
                     <Link
-                      href={`project-update/${project?._id}`}
+                      href={`project-update/${product?._id}`}
                       type="button"
                       className="bg-light bg-gradient border-0"
                     >

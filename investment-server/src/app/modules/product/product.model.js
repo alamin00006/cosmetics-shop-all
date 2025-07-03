@@ -29,11 +29,27 @@ const productSchema = new Schema(
         color: String,
         image: String, // Stores ImgBB URL
       },
+      // {
+      //   _id: false,
+      // },
     ],
-    productImage: String,
-    productImage: {
-      type: Array,
-    },
+
+    productImage: [
+      {
+        title: {
+          type: String,
+          default: null,
+        },
+        image: {
+          type: String,
+          default: null,
+        }, // Stores ImgBB URL
+      },
+      // {
+      //   _id: false,
+      // },
+    ],
+
     description: {
       type: String,
       required: true,
@@ -68,7 +84,7 @@ const productSchema = new Schema(
     },
     productCode: {
       type: String,
-      required: true,
+      // required: true,
       unique: true,
     },
     quantity: {
@@ -82,11 +98,25 @@ const productSchema = new Schema(
       ref: "Brand",
       // required: true,
     },
+    mainCategoryId: {
+      type: Schema.Types.ObjectId,
+      ref: "MainCategory",
+      // required: true,
+      default: null,
+    },
     categoryId: {
       type: Schema.Types.ObjectId,
-      ref: "SubCategory", // References the subcategory's _id
-      required: true,
+      ref: "Category",
+      // required: true,
+      default: null,
     },
+    subCategoryId: {
+      type: Schema.Types.ObjectId,
+      ref: "SubCategory",
+      required: true,
+      default: null,
+    },
+
     brandInfo: {
       founded: {
         type: Number,
@@ -112,12 +142,22 @@ const productSchema = new Schema(
         type: String,
       },
     },
+    isFeatured: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
+    isPublished: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
   },
   {
     timestamps: true,
-    toJSON: {
-      virtuals: true,
-    },
+    // toJSON: {
+    //   virtuals: true,
+    // },
   }
 );
 

@@ -4,7 +4,7 @@
 // import { FaPersonRunning } from "react-icons/fa6";
 // import { MdUpcoming } from "react-icons/md";
 // import { TbRosetteDiscountCheckFilled } from "react-icons/tb";
-import { useGetProjectsByCompanyOrPRQuery } from "../../redux/api/projectsApi";
+import { useGetProjectsByCompanyOrPRQuery } from "../../redux/api/productsApi";
 import { useGetUserQuery } from "../../redux/api/authApi";
 import { USER_ROLE } from "../../constants/role";
 
