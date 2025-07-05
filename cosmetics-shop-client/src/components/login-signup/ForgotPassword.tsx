@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import Link from "next/link";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -8,62 +8,64 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import { getBaseUrl } from "@/helpers/config/envConfig";
 
-const ForgotPassword = ({ setIsLoginPage, setIsPasswordReset }) => {
-  const [otp, setOtp] = useState(["", "", "", "", ""]);
-  const [userInfo, setUserInfo] = useState({
+// Define interfaces for props and state
+interface ForgotPasswordProps {
+  setIsLoginPage: (value: boolean) => void;
+  setIsPasswordReset: (value: boolean) => void;
+}
+
+interface UserInfo {
+  inputIdentifier: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+interface ErrorState {
+  inputIdentifierError: string;
+  passwordError: string;
+  confirmPasswordError: string;
+}
+
+const ForgotPassword: React.FC<ForgotPasswordProps> = ({
+  setIsLoginPage,
+  setIsPasswordReset,
+}) => {
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", ""]);
+  const [userInfo, setUserInfo] = useState<UserInfo>({
     inputIdentifier: "",
     newPassword: "",
-    confirmPassword: "", // Added confirm password field
+    confirmPassword: "",
   });
-  const [error, setError] = useState({
+  const [error, setError] = useState<ErrorState>({
     inputIdentifierError: "",
     passwordError: "",
-    confirmPasswordError: "", // Added confirm password error
+    confirmPasswordError: "",
   });
 
-  // Step 1: Phone, Step 2: OTP, Step 3: New Password
-  const [step, setStep] = useState(1);
-  const [showPassword, setShowPassword] = useState(false);
+  // Step 1: Phone/Email, Step 2: OTP, Step 3: New Password
+  const [step, setStep] = useState<number>(1);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [timer, setTimer] = useState<number>(180);
+  const [isExpired, setIsExpired] = useState<boolean>(false);
 
-  // Phone number validation
-  // const phoneCheck = (e) => {
-  //   const phoneNumber = e.target.value;
-
-  //   // Check if the phone number has 11 or more digits
-  //   if (phoneNumber.length >= 11) {
-  //     const bdPhoneNumberRegex = /^(013|014|015|016|017|018|019)\d{8}$/;
-  //     const validPhone = bdPhoneNumberRegex.test(phoneNumber);
-  //     if (validPhone) {
-  //       setUserInfo({ ...userInfo, phone: phoneNumber });
-  //       setError({ ...error, phoneError: "" });
-  //     } else {
-  //       setError({ ...error, phoneError: "Invalid Phone Number" });
-  //       setUserInfo({ ...userInfo, phone: "" });
-  //     }
-  //   } else {
-  //     setError({ ...error, phoneError: "" }); // Clear error while typing less than 11 digits
-  //   }
-  // };
-
-  const identifierCheck = (e) => {
+  const identifierCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value.trim();
     const bdPhoneRegex = /^(013|014|015|016|017|018|019)\d{8}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (bdPhoneRegex.test(input) || emailRegex.test(input)) {
-      setUserInfo({ ...userInfo, identifier: input });
+      setUserInfo({ ...userInfo, inputIdentifier: input });
       setError({ ...error, inputIdentifierError: "" });
     } else {
       setError({
         ...error,
         inputIdentifierError: "Enter a valid phone number or email",
       });
-      setUserInfo({ ...userInfo, identifier: "" });
+      setUserInfo({ ...userInfo, inputIdentifier: "" });
     }
   };
 
-  // Password validation
-  const passwordCheck = (e) => {
+  const passwordCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     const passwordRegex = /.{6,}/;
     const validPassword = passwordRegex.test(e.target.value);
     if (validPassword) {
@@ -78,8 +80,7 @@ const ForgotPassword = ({ setIsLoginPage, setIsPasswordReset }) => {
     }
   };
 
-  // Confirm password validation
-  const confirmPasswordCheck = (e) => {
+  const confirmPasswordCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     if (value !== userInfo.newPassword) {
       setError({ ...error, confirmPasswordError: "Passwords do not match" });
@@ -90,41 +91,39 @@ const ForgotPassword = ({ setIsLoginPage, setIsPasswordReset }) => {
     }
   };
 
-  // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // Handle sending OTP
-  const handleSendOtp = async (e) => {
+  const handleSendOtp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       await axios.post(`${getBaseUrl()}/user-verify/send-otp`, {
-        identifier: userInfo.identifier,
+        identifier: userInfo.inputIdentifier,
       });
       toast.success("OTP sent to your phone.");
       setStep(2);
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error?.response?.data?.message || "Error sending OTP.");
     }
   };
 
-  // Handle OTP change
-  const handleOtpChange = (index, value) => {
+  const handleOtpChange = (index: number, value: string) => {
     if (/^\d*$/.test(value)) {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
 
-      // Automatically focus on the next input field
       if (index < 4 && value !== "") {
-        document.getElementById(`otp-${index + 1}`).focus();
+        const nextInput = document.getElementById(
+          `otp-${index + 1}`
+        ) as HTMLInputElement;
+        nextInput?.focus();
       }
     }
   };
 
-  // Handle OTP paste
-  const handlePaste = (e) => {
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const pastedData = e.clipboardData
       .getData("text/plain")
@@ -138,12 +137,14 @@ const ForgotPassword = ({ setIsLoginPage, setIsPasswordReset }) => {
     setOtp(newOtp);
 
     if (pastedData.length > 0) {
-      document.getElementById(`otp-${pastedData.length - 1}`).focus();
+      const focusInput = document.getElementById(
+        `otp-${pastedData.length - 1}`
+      ) as HTMLInputElement;
+      focusInput?.focus();
     }
   };
 
-  // Handle OTP verification
-  const handleVerifyOtp = async (e) => {
+  const handleVerifyOtp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const otpValue = otp.join("");
     if (otpValue.length !== 5) {
@@ -151,19 +152,15 @@ const ForgotPassword = ({ setIsLoginPage, setIsPasswordReset }) => {
     }
     try {
       await axios.post(`${getBaseUrl()}/user-verify/verify-otp`, {
-        identifier: userInfo.identifier,
+        identifier: userInfo.inputIdentifier,
         otp: otpValue,
       });
       toast.success("OTP verified.");
       setStep(3);
-    } catch (error) {
+    } catch (error: any) {
       return toast.error(error?.response?.data?.message || "Invalid OTP.");
     }
   };
-
-  // Timer, For 3 minutes
-  const [timer, setTimer] = useState(180);
-  const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
     if (step === 2) {
@@ -185,47 +182,45 @@ const ForgotPassword = ({ setIsLoginPage, setIsPasswordReset }) => {
     return () => clearInterval(interval);
   }, [timer]);
 
-  const formatTime = (time) => {
+  const formatTime = (time: number): string => {
     const minutes = String(Math.floor(time / 60)).padStart(2, "0");
     const seconds = String(time % 60).padStart(2, "0");
     return `${minutes}:${seconds}`;
   };
 
-  // resend Otp Button
-  const handleResendOtp = async (e) => {
+  const handleResendOtp = async () => {
     try {
       await axios.post(`${getBaseUrl()}/user-verify/send-otp`, {
-        identifier: userInfo.identifier,
+        identifier: userInfo.inputIdentifier,
       });
       toast.success("OTP sent to your phone.");
       setTimer(180);
       setIsExpired(false);
-    } catch (error) {
+    } catch (error: any) {
       toast.error(error?.response?.data?.message || "Error sending OTP.");
     }
   };
 
-  // Handle password reset
-  const handleResetPassword = async (e) => {
+  const handleResetPassword = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (userInfo.newPassword !== userInfo.confirmPassword) {
       return toast.error("Passwords do not match.");
     }
     try {
       await axios.post(`${getBaseUrl()}/user-verify/reset-password`, {
-        identifier: userInfo.identifier,
+        identifier: userInfo.inputIdentifier,
         password: userInfo.newPassword,
       });
       toast.success("Password reset successfully.");
-      // router.push("/login");
       setIsPasswordReset(false);
       setIsLoginPage(true);
-    } catch (error) {
+    } catch (error: any) {
       toast.error(
         error?.response?.data?.message || "Error resetting password."
       );
     }
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
@@ -241,7 +236,7 @@ const ForgotPassword = ({ setIsLoginPage, setIsPasswordReset }) => {
               <input
                 type="text"
                 onChange={identifierCheck}
-                name="phone"
+                name="inputIdentifier"
                 className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#00c194] focus:border-[#00c194] sm:text-sm transition duration-200 ease-in-out"
                 placeholder="Enter your phone number or Email"
                 required
@@ -270,9 +265,6 @@ const ForgotPassword = ({ setIsLoginPage, setIsPasswordReset }) => {
             <p className="text-sm text-gray-600 mb-1">
               Enter the OTP (One Time Password) that has been sent to your
               registered Phone Number or Email
-              {/* <b>{`${userInfo?.phone?.slice(0, 3)}**${userInfo?.phone?.slice(
-                9
-              )}`}</b> */}
             </p>
 
             {isExpired ? (
@@ -300,14 +292,14 @@ const ForgotPassword = ({ setIsLoginPage, setIsPasswordReset }) => {
                       value={digit}
                       onChange={(e) => handleOtpChange(index, e.target.value)}
                       onPaste={handlePaste}
-                      maxLength="1"
+                      maxLength={1}
                       className="border border-gray-300 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded text-center focus:outline-none focus:ring-2 focus:ring-[#00BBB4]"
                     />
                   </div>
                 ))}
               </div>
               {isExpired && (
-                <div className="text-right text-sm text-gray-600  mr-9 mt-2">
+                <div className="text-right text-sm text-gray-600 mr-9 mt-2">
                   <div onClick={handleResendOtp}>
                     <p className="underline hover:text-[#02625a] text-primary cursor-pointer">
                       Re-send
@@ -318,8 +310,7 @@ const ForgotPassword = ({ setIsLoginPage, setIsPasswordReset }) => {
 
               <button
                 type="submit"
-                className={`  bg-primary text-white py-2 px-16 rounded-md shadow-sm hover:bg-[#00a47e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00BBB4] text-sm  font-bold`}
-                // disabled={isExpired} // Disable button if OTP is expired
+                className="bg-primary text-white py-2 px-16 rounded-md shadow-sm hover:bg-[#00a47e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00BBB4] text-sm font-bold"
               >
                 Verify
               </button>
@@ -391,7 +382,7 @@ const ForgotPassword = ({ setIsLoginPage, setIsPasswordReset }) => {
         )}
 
         <p
-          className="mt-4 text-center text-sm text-gray-600 cursor-pointer "
+          className="mt-4 text-center text-sm text-gray-600 cursor-pointer"
           onClick={() => {
             setIsPasswordReset(false);
             setIsLoginPage(true);

@@ -10,10 +10,11 @@ import toast, { Toaster } from "react-hot-toast";
 import LoadingState from "@/components/LoadingState/LoadingState";
 
 import { setUserVerificationData } from "@/helpers/utils/local-storage";
-import { userDataKey } from "@/constants/storageKey";
-import { getBaseUrl } from "@/helpers/config/envConfig";
 
-const SignUpPage = ({ setIsLoginPage, setIsSinUpPage, setIsOtpPage }) => {
+import { getBaseUrl } from "@/helpers/config/envConfig";
+import { userDataKey } from "@/constants/storageKey";
+
+const SignUpPage = ({ setIsLoginPage, setIsSinUpPage, setIsOtpPage }: any) => {
   const dispatch = useDispatch();
 
   const [name, setName] = useState("");
@@ -25,7 +26,7 @@ const SignUpPage = ({ setIsLoginPage, setIsSinUpPage, setIsOtpPage }) => {
   const generateRandomCode = () => {
     // Generate a random 6-digit number
     const newRandomCode = Math.floor(10000 + Math.random() * 90000);
-    setRandomCode(newRandomCode);
+    setRandomCode(newRandomCode as any);
   };
 
   const [userInfo, setUserInfo] = useState({
@@ -42,7 +43,7 @@ const SignUpPage = ({ setIsLoginPage, setIsSinUpPage, setIsOtpPage }) => {
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to toggle confirm password visibility
 
-  const emailCheck = (e) => {
+  const emailCheck = (e: any) => {
     const emailRegex = /\S+@\S+\.\S+/;
     const validEmail = emailRegex.test(e.target.value);
     if (validEmail) {
@@ -54,7 +55,7 @@ const SignUpPage = ({ setIsLoginPage, setIsSinUpPage, setIsOtpPage }) => {
     }
   };
 
-  const passwordCheck = (e) => {
+  const passwordCheck = (e: any) => {
     const passwordRegex = /.{6,}/;
     const validPassWord = passwordRegex.test(e.target.value);
     if (validPassWord) {
@@ -69,7 +70,7 @@ const SignUpPage = ({ setIsLoginPage, setIsSinUpPage, setIsOtpPage }) => {
     }
   };
 
-  const confirmPasswordCheck = (e) => {
+  const confirmPasswordCheck = (e: any) => {
     const confirmPassword = e.target.value;
     if (confirmPassword === userInfo.password) {
       setUserInfo({ ...userInfo, confirmPass: confirmPassword });
@@ -88,7 +89,7 @@ const SignUpPage = ({ setIsLoginPage, setIsSinUpPage, setIsOtpPage }) => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const handleSignUp = async (e) => {
+  const handleSignUp = async (e: any) => {
     // const { firstName, email, phone, password, refferCode } = data;
     e.preventDefault();
     // Check Phone Number
@@ -134,7 +135,7 @@ const SignUpPage = ({ setIsLoginPage, setIsSinUpPage, setIsOtpPage }) => {
       setUserVerificationData(userDataKey, otpData);
       setIsSinUpPage(false);
       setIsOtpPage(true);
-    } catch (error) {
+    } catch (error: any) {
       dispatch(placeLoadingShow(false));
 
       return toast.error(error?.response?.data?.message);

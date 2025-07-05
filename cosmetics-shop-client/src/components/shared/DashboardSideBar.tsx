@@ -15,16 +15,16 @@ import { TbDna2 } from "react-icons/tb";
 
 const DashboardSideBar = () => {
   const pathname = usePathname();
-  const router = useRouter();
+  // const router = useRouter();
   const iconWidth = {
     width: "24px",
     height: "24px",
   };
-  const logOut = () => {
-    removeUserInfo(authKey);
-    router.push("/");
-    window.location.reload();
-  };
+  // const logOut = () => {
+  //   removeUserInfo(authKey);
+  //   router.push("/");
+  //   window.location.reload();
+  // };
 
   return (
     <>
@@ -163,7 +163,9 @@ const DashboardSideBar = () => {
                 <span className="flex-1 ms-3 whitespace-nowrap">Profile</span>
               </Link>
             </li>
-            <li onClick={logOut}>
+            <li
+            //  onClick={logOut}
+            >
               <a
                 href="#"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"

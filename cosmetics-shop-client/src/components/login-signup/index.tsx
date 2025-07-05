@@ -31,13 +31,13 @@ const AuthPage = () => {
         <OtpVerification
           setIsOtpPage={setIsOtpPage}
           setIsSinUpPage={setIsSinUpPage}
-          setIsLoginPage={setIsLoginPage}
+          // setIsLoginPage={setIsLoginPage}
         />
       )}
       {isPasswordReset && (
         <ForgotPassword
-          setIsOtpPage={setIsOtpPage}
-          setIsSinUpPage={setIsSinUpPage}
+          // setIsOtpPage={setIsOtpPage}
+          // setIsSinUpPage={setIsSinUpPage}
           setIsLoginPage={setIsLoginPage}
           setIsPasswordReset={setIsPasswordReset}
         />

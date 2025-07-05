@@ -1,29 +1,42 @@
 "use client";
+
 import { authKey, userDataKey } from "@/constants/storageKey";
-import { useUserSignUpMutation } from "@/redux/api/authApi";
 
 import {
   getFromLocalStorage,
   getUserVerificationData,
   removeUserVerificationData,
 } from "@/helpers/utils/local-storage";
-
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { getBaseUrl } from "@/helpers/config/envConfig";
 
-const OtpVerification = ({ setIsOtpPage, setIsSinUpPage }) => {
-  const [userSignUp] = useUserSignUpMutation();
-  const [otp, setOtp] = useState(["", "", "", "", ""]);
+// Define interfaces for props and user data
+interface OtpVerificationProps {
+  setIsOtpPage: (value: boolean) => void;
+  setIsSinUpPage: (value: boolean) => void;
+}
+
+interface UserData {
+  phoneNumber?: string;
+  [key: string]: any;
+}
+
+const OtpVerification: React.FC<OtpVerificationProps> = ({
+  setIsOtpPage,
+  setIsSinUpPage,
+}) => {
+  // const [userSignUp] = useUserSignUpMutation();
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", ""]);
   const router = useRouter();
-  const [userData, setUserData] = useState({});
-  const getUserData = getUserVerificationData(userDataKey);
+  const [userData, setUserData] = useState<UserData>({});
+  const [seconds, setSeconds] = useState<number>(120);
 
-  const [seconds, setSeconds] = useState(120);
-
+  // Load user data from local storage
   useEffect(() => {
+    const getUserData = getUserVerificationData(userDataKey);
     if (getUserData) {
       setUserData(getUserData);
     } else {
@@ -31,66 +44,61 @@ const OtpVerification = ({ setIsOtpPage, setIsSinUpPage }) => {
     }
   }, []);
 
-  // Format the remaining seconds as minutes:seconds
-  const formattedTime = seconds % 60;
-
-  const handleOtpChange = (index, value) => {
-    // Validate input to allow only numerical values
+  // Handle OTP input change
+  const handleOtpChange = (index: number, value: string) => {
     if (/^\d*$/.test(value)) {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
 
-      // Automatically focus on the next input field
       if (index < 4 && value !== "") {
-        document.getElementById(`otp-${index + 1}`).focus();
+        const nextInput = document.getElementById(
+          `otp-${index + 1}`
+        ) as HTMLInputElement;
+        nextInput?.focus();
       }
     }
   };
 
-  const handleOtp = async (e) => {
+  // Handle OTP form submission
+  const handleOtp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       const accessToken = getFromLocalStorage(authKey);
-      // Set the headers
       const headers = {
         Authorization: `${accessToken}`,
         "Content-Type": "application/json",
       };
 
-      // await placeInvestment(investData);
       const res = await axios.post(
         `${getBaseUrl()}/users/signup`,
         {
           ...userData,
           customerOtp: otp.join(""),
         },
-        {
-          headers,
-        }
+        { headers }
       );
 
       const token = res?.data?.data?.token;
 
       if (token) {
-        toast.success(res?.data?.message);
+        toast.success(res?.data?.message || "Verification successful");
         localStorage.setItem(authKey, token);
         removeUserVerificationData(userDataKey);
         router.back();
       }
-    } catch (error) {
-      toast.error(error?.response?.data?.message);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Verification failed");
     }
   };
 
-  // handle otp paste
-
-  const handlePaste = (e) => {
+  // Handle OTP paste
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text/plain").split("");
-
-    // Update the OTP array with the pasted data
+    const pastedData = e.clipboardData
+      .getData("text/plain")
+      .slice(0, 5)
+      .split("");
     const newOtp = [...otp];
     pastedData.forEach((digit, index) => {
       if (index < 5) {
@@ -99,24 +107,35 @@ const OtpVerification = ({ setIsOtpPage, setIsSinUpPage }) => {
     });
     setOtp(newOtp);
 
-    // Automatically focus on the next input field
     if (pastedData.length > 0) {
-      document.getElementById(`otp-${pastedData.length - 1}`).focus();
+      const focusInput = document.getElementById(
+        `otp-${pastedData.length - 1}`
+      ) as HTMLInputElement;
+      focusInput?.focus();
     }
   };
 
-  const handleResentOtp = async (e) => {
+  // Handle resend OTP
+  const handleResentOtp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSeconds(120);
 
     const intervalId = setInterval(() => {
-      // Decrease the remaining seconds by 1
       setSeconds((prevSeconds) => prevSeconds - 1);
     }, 1000);
+
     setTimeout(() => {
       clearInterval(intervalId);
-    }, 60000);
+    }, 120000); // Changed to 120 seconds to match initial timer
+
     toast.success("Please Check Your Phone Number");
+  };
+
+  // Format the remaining seconds as minutes:seconds
+  const formattedTime = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   return (
@@ -141,7 +160,6 @@ const OtpVerification = ({ setIsOtpPage, setIsSinUpPage }) => {
               setIsSinUpPage(true);
             }}
           >
-            {" "}
             Change Number
           </p>
 
@@ -156,7 +174,7 @@ const OtpVerification = ({ setIsOtpPage, setIsSinUpPage }) => {
                     value={digit}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onPaste={handlePaste}
-                    maxLength="1"
+                    maxLength={1}
                     className="border border-gray-300 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded text-center focus:outline-none focus:ring-2 focus:ring-[#00BBB4]"
                   />
                 </div>
@@ -172,12 +190,14 @@ const OtpVerification = ({ setIsOtpPage, setIsSinUpPage }) => {
           <div className="mt-6 text-sm text-gray-600">
             {`Didn't`} receive any OTP?{" "}
             <form onSubmit={handleResentOtp}>
-              <button className="underline hover:text-[#02625a] text-primary cursor-pointer">
-                Re-send {formattedTime <= 0 ? "" : `(${formattedTime}s)`}
+              <button
+                type="submit"
+                className="underline hover:text-[#02625a] text-primary cursor-pointer"
+              >
+                Re-send {seconds <= 0 ? "" : `(${formattedTime(seconds)})`}
               </button>
             </form>
           </div>
-          {/* {message && <p className="mt-2 text-sm text-red-500">{message}</p>} */}
         </div>
       </div>
       <Toaster position="top-center" reverseOrder={false} />

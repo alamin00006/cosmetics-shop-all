@@ -6,15 +6,15 @@ import { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-import { authKey } from "@/constants/storageKey";
+import { isLoggedIn } from "../../services/auth.service";
+import { authKey } from "@/constants/authKey";
 import {
   handleSubmit,
   passwordCheck,
   phoneNumberCheck,
-} from "@/helpers/utils/authHelpers";
-import { isLoggedIn } from "@/services/auth.service";
+} from "@/utils/authHelpers";
 
-const Login = ({ setIsSinUpPage, setIsLoginPage, setIsPasswordReset }) => {
+const Login = ({ setIsSinUpPage, setIsLoginPage, setIsPasswordReset }: any) => {
   // const { userData, error: userError, loading } = useUserData();
 
   const router = useRouter();
@@ -64,7 +64,7 @@ const Login = ({ setIsSinUpPage, setIsLoginPage, setIsPasswordReset }) => {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="Enter Phone Number"
               required
-              onWheel={(e) => e.target.blur()}
+              onWheel={(e: any) => e.target.blur()}
             />
             {error.phoneError && (
               <p className="text-red-500 text-sm mt-2">{error.phoneError}</p>

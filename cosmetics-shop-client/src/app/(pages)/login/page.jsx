@@ -1,4 +1,4 @@
-import AuthPage from "@/components/pages/login-signup";
+import AuthPage from "../../../components/login-signup";
 
 export const metadata = {
   title: "Sharikana | Login - Fractional Property Investment For All",
