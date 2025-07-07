@@ -1,5 +1,6 @@
 "use client";
 
+import { useGetProductsQuery } from "@/redux/api/product";
 import Banner from "../components/Banner/Banner";
 import SquareBanner from "../components/Banner/SquareBanner";
 import BestSellerCarousel from "../components/Carousel/BestSellerCarousel";
@@ -20,6 +21,16 @@ export interface BestSellerlItem {
   shades: string[];
 }
 export default function Home() {
+  const query = {};
+
+  const {
+    data: products,
+    isSuccess: projectIsSuccess,
+    error: projectError,
+    isLoading: projectIsLoading,
+    refetch,
+  } = useGetProductsQuery(query);
+
   const bestSellerlItemItems: BestSellerlItem[] = [
     {
       label: "Eveline Cosmetics Better Than Perfect Soft Matt Pressed Blush",

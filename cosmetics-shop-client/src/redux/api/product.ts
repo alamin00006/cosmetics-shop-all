@@ -11,10 +11,10 @@ const projectApi = baseApi.injectEndpoints({
       Product[],
       { [key: string]: string | number | undefined }
     >({
-      query: (arg) => ({
+      query: () => ({
         url: `${PROJECT_URL}`,
         method: "GET",
-        params: arg,
+        // params: arg,
       }),
       providesTags: [{ type: "products" } as TagDescription<"products">],
     }),
