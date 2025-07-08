@@ -30,13 +30,13 @@ const HeroBanner: React.FC = () => {
     autoplay: true,
     pauseOnHover: true,
     speed: 500,
-    // arrows: true,
-    pagination: true,
+    arrows: true,
+    pagination: false,
     interval: 3000,
   };
 
   return (
-    <div className="md:mt-20 sm:mt-16">
+    <div className="">
       {bannerData?.length > 0 ? (
         <Splide options={splideOptions}>
           {bannerData?.map((banner) => (

@@ -71,57 +71,84 @@ const AddToCartDrawer: FC<AddToCartDrawerProps> = ({
             <DrawerBody className="py-4">
               {selectedItem ? (
                 <>
-                  {/* Product Image */}
-                  <div className="flex justify-center mb-4">
-                    <img
-                      src={selectedItem.imageUrl}
-                      alt={selectedItem.label}
-                      className="w-40 h-40 object-contain"
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          "https://via.placeholder.com/150?text=" +
-                          selectedItem.label;
-                      }}
-                    />
-                  </div>
+                  <div className="">
+                    {/* Main Container */}
+                    <div className="">
+                      {/* Product Image and Details */}
+                      <div className="flex flex-col  items-center gap-4">
+                        {/* Product Image */}
+                        <div className="flex justify-center mb-4">
+                          <img
+                            src={selectedItem.imageUrl}
+                            alt={selectedItem.label}
+                            className="w-40 h-40 object-contain"
+                            onError={(e) => {
+                              e.currentTarget.src =
+                                "https://via.placeholder.com/150?text=" +
+                                selectedItem.label;
+                            }}
+                          />
+                        </div>
+                        {/* Product Description */}
+                      </div>
 
-                  {/* Shade Selection */}
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-gray-700 mb-2">
-                      Select Shade:
-                    </p>
-                    <div className="flex items-center space-x-3">
-                      {selectedItem.shades.map((shade, shadeIndex) => (
-                        <div
-                          key={shadeIndex}
-                          className={`w-8 h-8 rounded-full border-2 cursor-pointer transition-all ${
-                            selectedShade === shade
-                              ? "border-pink-500"
-                              : "border-gray-300"
-                          }`}
-                          style={{ backgroundColor: shade }}
-                          onClick={() => handleShadeSelect(shade)}
-                          title={shade}
-                        />
-                      ))}
+                      {/* Price and Points Section */}
+                      <div className="mt-6 text-center">
+                        <p className="text-gray-700">
+                          🎯 Earn up to 536 points on this purchase
+                        </p>
+                        <p className="text-xl font-semibold text-green-600 mt-2">
+                          {selectedItem.price} {""}
+                          <span className="text-sm text-gray-500 line-through">
+                            {selectedItem.originalPrice}
+                          </span>
+                          <span className="text-red-500 line-through">
+                            10% Off
+                          </span>
+                        </p>
+                      </div>
+
+                      {/* Available Offers */}
+                      <div className="mt-4">
+                        <div className="bg-pink-100 p-2 rounded-t">
+                          <span className="text-pink-800 font-semibold">
+                            % Available Offers
+                          </span>
+                        </div>
+                        <div className="border border-pink-200 p-2 rounded-b">
+                          <select className="w-full p-2 border-none focus:outline-none">
+                            <option>Orange</option>
+                            <option>Pink</option>
+                            <option>White</option>
+                            <option>Purple</option>
+                            <option>Yellow</option>
+                            <option>Light Pink</option>
+                            <option>Red</option>
+                            <option>Coral</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Color Swatches */}
+                      <div className="flex justify-center gap-2 mt-4">
+                        <div className="w-6 h-6 rounded-full bg-orange-400"></div>{" "}
+                        {/* Orange */}
+                        <div className="w-6 h-6 rounded-full bg-pink-400"></div>{" "}
+                        {/* Pink */}
+                        <div className="w-6 h-6 rounded-full bg-gray-200"></div>{" "}
+                        {/* White */}
+                        <div className="w-6 h-6 rounded-full bg-purple-300"></div>{" "}
+                        {/* Purple */}
+                        <div className="w-6 h-6 rounded-full bg-yellow-300"></div>{" "}
+                        {/* Yellow */}
+                        <div className="w-6 h-6 rounded-full bg-pink-200"></div>{" "}
+                        {/* Light Pink */}
+                        <div className="w-6 h-6 rounded-full bg-red-400"></div>{" "}
+                        {/* Red */}
+                        <div className="w-6 h-6 rounded-full bg-orange-300"></div>{" "}
+                        {/* Coral */}
+                      </div>
                     </div>
-                    {selectedShade && (
-                      <p className="text-sm text-gray-600 mt-2">
-                        Selected Shade:{" "}
-                        <span className="font-medium">{selectedShade}</span>
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Product Features (similar to the image) */}
-                  <div className="text-sm text-gray-600 space-y-2">
-                    <p className="font-medium">Features:</p>
-                    <ul className="list-disc pl-4">
-                      <li>Smooth, Creamy Texture - No Brushes Needed</li>
-                      <li>Twist-Up Crayon for Quick, Smooth Use</li>
-                      <li>Long-Lasting, Intense Color Payoff</li>
-                      <li>2-in-1 Design: Eyeshadow & Eyeliner</li>
-                    </ul>
                   </div>
                 </>
               ) : (
@@ -130,31 +157,22 @@ const AddToCartDrawer: FC<AddToCartDrawerProps> = ({
                 </p>
               )}
             </DrawerBody>
-            <DrawerFooter className="border-t border-gray-200 pt-2">
-              <Button
-                color="danger"
-                variant="light"
-                onPress={onClose}
-                className="uppercase"
-              >
-                Close
-              </Button>
+            <DrawerFooter className="border-t border-gray-200 pt-2 flex flex-col sm:flex-row gap-2 px-4 sm:px-6 lg:px-8">
               {selectedItem && (
                 <Button
-                  color="primary"
                   onPress={() => {
                     if (!selectedShade) {
                       alert("Please select a shade before adding to cart.");
                       return;
                     }
                     alert(
-                      `Added to cart: ${selectedItem.label} (${selectedShade})`,
+                      `Added to cart: ${selectedItem.label} (${selectedShade})`
                     );
                     onClose();
                   }}
-                  className="uppercase"
+                  className="uppercase w-full bg-black text-white hover:bg-gray-800 transition-colors duration-200"
                 >
-                  Add to Cart
+                  Add to Bag
                 </Button>
               )}
             </DrawerFooter>

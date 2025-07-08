@@ -10,7 +10,7 @@ import Header from "@/components/header/Header";
 import Footer from "@/components/Footer";
 import { DesignProvider } from "./providers";
 import { Providers } from "@/redux/provider";
-
+import "@splidejs/react-splide/css";
 export const metadata: Metadata = {
   title: {
     default: siteConfig.name,
