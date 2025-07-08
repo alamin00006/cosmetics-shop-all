@@ -10,7 +10,7 @@ type AxiosBaseQueryArgs = {
 };
 
 type AxiosBaseQueryResult<T = any> =
-  | AxiosResponse<T>
+  | { data: T }
   | {
       error: {
         status?: number;
@@ -35,11 +35,12 @@ export const axiosBaseQuery =
         params,
         headers: {
           "Content-Type": contentType || "application/json",
-          // "x-api-key": get_api_key(),
         },
         withCredentials: true,
       });
-      return result;
+
+      // ✅ RETURN only result.data
+      return { data: result.data };
     } catch (err: any) {
       return {
         error: {

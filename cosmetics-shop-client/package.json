@@ -25,6 +25,7 @@
     "@react-aria/ssr": "3.9.8",
     "@react-aria/visually-hidden": "3.8.22",
     "@reduxjs/toolkit": "^2.8.2",
+    "@splidejs/react-splide": "^0.7.12",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/react-modal": "^3.16.3",
     "axios": "^1.10.0",

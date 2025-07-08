@@ -10,6 +10,7 @@ import NewArrivalsCarousel from "../components/Carousel/NewArrivalsCarousel";
 import RewardSquareBanner from "../components/Carousel/RewardSquareBanner";
 import TopPickCarousel from "../components/Carousel/TopPickCarousel";
 import TrendsSection from "../components/TrendsSection";
+import HeroBanner from "@/components/Banner/Banner2";
 
 export interface BestSellerlItem {
   label: string;
@@ -113,7 +114,7 @@ export default function Home() {
   return (
     <main>
       <div className="container mx-auto px-4">
-        <Banner />
+        <HeroBanner />
         <CollectionCarousel />
         <TopPickCarousel />
         <NewArrivalsCarousel />
