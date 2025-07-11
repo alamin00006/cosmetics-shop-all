@@ -6,12 +6,8 @@ import Image from "next/image";
 import ProductThumbnails from "@/components/products/ProductThumbnails";
 import { FaStar, FaTrophy } from "react-icons/fa";
 import Link from "next/link";
-import Accordion from "@/components/products/Accordion";
-import NewArrivalsCarousel from "@/components/Carousel/NewArrivalsCarousel";
-import Image1 from "../../../../assets/image/image-1.webp";
-import Image2 from "../../../../assets/image/image-2.webp";
-import Image3 from "../../../../assets/image/image-3.webp";
-import Image4 from "../../../../assets/image/image-4.webp";
+// import Accordion from "@/components/products/Accordion";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToCart,
@@ -20,129 +16,20 @@ import {
   decreaseCart,
 } from "@/redux/reducers/cartSlice";
 import { RootState } from "@/redux/store";
+import { Product } from "@/types/product";
+import Accordion, { AccordionItem } from "../products/Accordion";
+import RelatedProducts from "../RelatedProduct/RelatedProducts";
+import toast, { Toaster } from "react-hot-toast";
+import { CartItem, Shade } from "@/types/cart";
 
 // Define interfaces for type safety
-interface Shade {
-  name: string;
-  color: string;
-  image_url: string;
-}
 
-interface Product {
-  name: string;
-  price: number;
-  currency: string;
-  points_earned: number;
-  available_shades: Shade[];
-  description: string;
-  features: string[];
-  ingredients: string[];
-  country_of_origin: string;
-  manufacturer: string;
-  address_of_manufacturer: string;
-  how_to_use: string;
-  shelf_life: string;
-  product_code: string;
-}
-
-interface BrandInfo {
-  founded: number;
-  followers: string;
-  locations: string;
-  orders: string;
-}
-
-interface Certifications {
-  authentic: string;
-  shipping: string;
-  payment: string;
-}
-
-interface CartItem {
-  _id: string;
-  price: number;
-  quantity: number;
-  cartQuantity: number;
-  singleCartTotal: number;
-  selectedShade: Shade;
-  product: Product;
-  brand_info: BrandInfo;
-  certifications: Certifications;
-}
-
-// Simulated product data (replace with API call)
-const productData = {
-  _id: "1",
-  product: {
-    name: "Revolution Pout Lip Oil",
-    price: 1800,
-    currency: "BDT",
-    points_earned: 660,
-    available_shades: [
-      {
-        name: "Shade",
-        color: "Snale",
-        image_url: Image1.src,
-      },
-      {
-        name: "Watermelon Pink",
-        color: "Watermelon Pink",
-        image_url: Image2.src,
-      },
-      {
-        name: "Orange Peach",
-        color: "Orange Peach",
-        image_url: Image3.src,
-      },
-      {
-        name: "Honey Shimmer",
-        color: "Honey Shimmer",
-        image_url: Image4.src,
-      },
-    ],
-    description:
-      "A lightweight lip oil with high-shine finish that shade keeps lips hydrated again and again. Revolution Pout Lip Oil drenches your lips, gloss-free, stick-free.",
-    features: [
-      "Lightweight lip oil",
-      "High-shine finish",
-      "Hydrating formula",
-      "Inspired by vitamin E, cherry seed oil, and macadamia oil",
-      "Seven shimmering shades",
-    ],
-    ingredients: [
-      "Shade - a subtle sheen with dark flecks",
-      "Watermelon Pink - a subtle light pink",
-      "Orange Peach - a high-shine orange",
-      "Honey Shimmer - a subtle sheen with gold flecks",
-    ],
-    country_of_origin: "China",
-    manufacturer: "Revolution Beauty",
-    address_of_manufacturer:
-      "Unit 4B, Sheet Glass Road, Culvert, Queensborough, NE13 9JS",
-    how_to_use: "Apply to lips as needed.",
-    shelf_life: "24 Months",
-    product_code: "REV12345",
-  },
-  brand_info: {
-    founded: 2012,
-    followers: "2K+",
-    locations: "25+",
-    orders: "10M+",
-  },
-  certifications: {
-    authentic: "100% Authentic",
-    shipping: "Free Shipping",
-    payment: "Secured Payment",
-  },
-};
-
-export default function ProductDetailsPage() {
+const ProductDetails = ({ product }: { product: Product }) => {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  const [product, setProduct] = useState<Product | null>(null);
   const [mainImage, setMainImage] = useState<string>("");
-  const [selectedShade, setSelectedShade] = useState<Shade | null>(null);
+  const [selectedShade, setSelectedShade] = useState<any>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const [displayQuantity, setDisplayQuantity] = useState<number>(1); // Local state for UI quantity
   const dispatch = useDispatch();
@@ -160,11 +47,9 @@ export default function ProductDetailsPage() {
   useEffect(() => {
     async function loadProduct() {
       // Simulate fetching product by ID (replace with API call)
-      setProduct(productData.product);
-      setSelectedShade(productData.product.available_shades[0] || null);
-      setMainImage(
-        productData.product.available_shades[0]?.image_url || Image1.src
-      );
+      //   setProduct(product.product);
+      setSelectedShade(product.availableShades[0] || null);
+      setMainImage(product.availableShades[0]?.image || "/placeholder.png");
       setCurrentImageIndex(0);
       setDisplayQuantity(1); // Reset quantity on page load
     }
@@ -184,12 +69,12 @@ export default function ProductDetailsPage() {
 
   const handleThumbnailClick = (image: string) => {
     if (product) {
-      const index = product.available_shades.findIndex(
-        (shade) => shade.image_url === image
+      const index = product.availableShades.findIndex(
+        (shade) => shade.image === image
       );
       setMainImage(image);
       setCurrentImageIndex(index !== -1 ? index : 0);
-      setSelectedShade(product.available_shades[index]);
+      setSelectedShade(product.availableShades[index]);
     }
   };
 
@@ -207,8 +92,8 @@ export default function ProductDetailsPage() {
       singleCartTotal: product.price * newQuantity,
       selectedShade,
       product,
-      brand_info: productData.brand_info,
-      certifications: productData.certifications,
+      //   brand_info: product.brand_info,
+      //   certifications: product.certifications,
     };
 
     if (change > 0) {
@@ -220,20 +105,19 @@ export default function ProductDetailsPage() {
 
   const handleShadeChange = (shade: Shade) => {
     setSelectedShade(shade);
-    setMainImage(shade.image_url);
+    setMainImage(shade.image);
     setCurrentImageIndex(
-      product?.available_shades.findIndex((s) => s.name === shade.name) || 0
+      product?.availableShades.findIndex((s) => s.name === shade.name) || 0
     );
     // Quantity will be updated via useEffect based on the new selected shade
   };
 
   const handleNextImage = () => {
     if (product) {
-      const newIndex =
-        (currentImageIndex + 1) % product.available_shades.length;
+      const newIndex = (currentImageIndex + 1) % product.availableShades.length;
       setCurrentImageIndex(newIndex);
-      setMainImage(product.available_shades[newIndex].image_url);
-      setSelectedShade(product.available_shades[newIndex]);
+      setMainImage(product.availableShades[newIndex].image);
+      setSelectedShade(product.availableShades[newIndex]);
     }
   };
 
@@ -241,17 +125,17 @@ export default function ProductDetailsPage() {
     if (product) {
       const newIndex =
         currentImageIndex === 0
-          ? product.available_shades.length - 1
+          ? product.availableShades.length - 1
           : currentImageIndex - 1;
       setCurrentImageIndex(newIndex);
-      setMainImage(product.available_shades[newIndex].image_url);
-      setSelectedShade(product.available_shades[newIndex]);
+      setMainImage(product.availableShades[newIndex].image);
+      setSelectedShade(product.availableShades[newIndex]);
     }
   };
 
   const handleAddToCart = () => {
     if (!selectedShade) {
-      alert("Please select a shade before adding to cart.");
+      toast.error("Please select a shade before adding to cart.");
       return;
     }
 
@@ -264,67 +148,63 @@ export default function ProductDetailsPage() {
         singleCartTotal: product.price * displayQuantity,
         selectedShade,
         product,
-        brand_info: productData.brand_info,
-        certifications: productData.certifications,
+        // brand_info: product.brand_info,
+        // certifications: product.certifications,
       };
 
       dispatch(addToCart(cartItem));
       dispatch(getTotals());
     }
+    toast.success("Item added to cart successfully!");
   };
 
   if (!product) {
     return <div className="text-center py-10">Product not found</div>;
   }
 
-  const accordionItems = [
+  const accordionItems: AccordionItem[] = [
     {
       title: "Details",
       content: product.description,
     },
     {
       title: "How To Use",
-      content: product.how_to_use,
+      content: product.howToUse ?? "",
     },
     {
       title: "Ingredients",
-      content: product.ingredients.join(", "),
+      content: product.ingredients ?? "",
+    },
+    {
+      title: "About The Brand",
+      content: product.brand?.description ?? "",
     },
   ];
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-8">
+    <div className="mt-5">
       {/* Product Layout */}
-      <div className="flex flex-col md:flex-row gap-6">
+      <div className="grid grid-cols-12 gap-6">
         {/* Image Section */}
-        <div className="w-full md:w-1/2">
-          <div className="relative">
+        <div className="col-span-12 md:col-span-6">
+          <div className=" flex items-center gap-3">
+            <ProductThumbnails
+              thumbnails={product.availableShades.map((shade) => shade.image)}
+              onThumbnailClick={handleThumbnailClick}
+              mainImage={mainImage}
+            />
             <Image
-              src={mainImage}
+              src={mainImage || "/placeholder.png"}
               alt={product.name}
               width={500}
               height={500}
-              className="w-full h-auto rounded-lg shadow-md"
-              onError={() =>
-                setMainImage(
-                  `https://via.placeholder.com/400?text=${product.name}`
-                )
-              }
-            />
-          </div>
-          <div className="mt-4">
-            <ProductThumbnails
-              thumbnails={product.available_shades.map(
-                (shade) => shade.image_url
-              )}
-              onThumbnailClick={handleThumbnailClick}
-              mainImage={mainImage}
+              className="w-full md:h-[500px] sm:h-[300px] rounded-lg shadow-md"
             />
           </div>
         </div>
 
         {/* Product Details */}
-        <div className="w-full md:w-1/2">
+        <div className="col-span-12 md:col-span-6">
           <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
 
           {/* Rating and Reviews */}
@@ -354,7 +234,7 @@ export default function ProductDetailsPage() {
           <div className="flex items-center mb-4">
             <FaTrophy className="w-4 h-4 text-yellow-500 mr-2" />
             <span className="text-sm text-gray-600">
-              Earn {product.points_earned} points on this purchase.{" "}
+              Earn 200 points on this purchase.{" "}
               <Link href="#" className="text-blue-500 hover:underline">
                 Learn more
               </Link>
@@ -367,7 +247,7 @@ export default function ProductDetailsPage() {
               Shade: {selectedShade?.name || "Select a shade"}
             </h3>
             <div className="flex gap-2">
-              {product.available_shades.map((shade) => (
+              {product.availableShades.map((shade) => (
                 <button
                   key={shade.name}
                   onClick={() => handleShadeChange(shade)}
@@ -433,31 +313,6 @@ export default function ProductDetailsPage() {
               ADD TO BAG
             </button>
           </div>
-
-          {/* Product Information */}
-          <div className="text-sm text-gray-600 mb-4">
-            <p className="mb-2">
-              <strong>Description:</strong> {product.description}
-            </p>
-            <p className="mb-2">
-              <strong>SKU:</strong> {product.product_code}
-            </p>
-            <p className="mb-2">
-              <strong>Category:</strong> Lip Care
-            </p>
-            <p className="mb-2">
-              <strong>Tags:</strong> {product.features.join(", ")}
-            </p>
-          </div>
-
-          {/* Back Button */}
-          <button
-            className="text-sm text-gray-600 hover:underline"
-            onClick={() => router.back()}
-            aria-label="Back to products"
-          >
-            Back to Products
-          </button>
         </div>
       </div>
 
@@ -466,7 +321,14 @@ export default function ProductDetailsPage() {
         <Accordion items={accordionItems} />
       </div>
 
-      <NewArrivalsCarousel />
-    </main>
+      <RelatedProducts />
+      <Toaster
+        position="top-center"
+        containerStyle={{ marginTop: "100px" }}
+        reverseOrder={false}
+      />
+    </div>
   );
-}
+};
+
+export default ProductDetails;

@@ -21,18 +21,25 @@ interface Certifications {
   shipping?: string;
   payment?: string;
 }
+interface brand {
+  name?: string;
+  description?: string;
+  image?: string;
+}
 
 export interface Product {
+  _id: string;
   name: string;
   price: number;
+  discount: number;
   currency: string;
   pointsEarned: number;
   shade?: string;
   availableShades: AvailableShade[];
   productImage: ProductImage[];
   description: string;
-  features: string[];
-  ingredients: string[];
+  features: string;
+  ingredients: string;
   countryOfOrigin: string;
   manufacturer: string;
   addressOfManufacturer: string;
@@ -40,7 +47,7 @@ export interface Product {
   shelfLife?: string;
   productCode?: string;
   quantity: number;
-  brand?: string;
+  brand?: brand;
   mainCategoryId?: string;
   categoryId?: string;
   subCategoryId: string;

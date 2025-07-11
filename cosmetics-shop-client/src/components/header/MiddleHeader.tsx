@@ -7,6 +7,7 @@ import Container from "../Container/Container";
 import { FiSearch, FiMenu } from "react-icons/fi";
 import SearchBar from "./SearchBar";
 import HeaderIcons from "./HeaderIcon";
+import Link from "next/link";
 
 interface MiddleHeaderProps {
   toggleMobileMenu: () => void;
@@ -38,12 +39,15 @@ const MiddleHeader: React.FC<MiddleHeaderProps> = ({ toggleMobileMenu }) => {
 
             {/* Center: Logo */}
             <div className="flex items-center justify-center flex-1">
-              <Image
-                src={logo}
-                alt="logo"
-                className="h-8 sm:h-8 w-auto object-contain"
-                priority
-              />
+              <Link href="/" className="flex items-center">
+                <Image
+                  src={logo}
+                  alt="Cosmetics Shop Logo"
+                  width={100}
+                  height={50}
+                  className="w-24 h-12 sm:w-28 sm:h-14 md:w-32 md:h-16 object-contain"
+                />
+              </Link>
             </div>
 
             {/* Mobile: Search Icon / Desktop: Icons */}

@@ -98,7 +98,7 @@ const getUserByPhone = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "get Success",
-    data: encryptedData,
+    data: userData,
   });
 });
 const getUserById = catchAsync(async (req, res) => {
@@ -110,7 +110,7 @@ const getUserById = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "get Success",
-    data: encryptedData,
+    data: userData,
   });
 });
 

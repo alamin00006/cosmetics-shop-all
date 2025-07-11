@@ -1,40 +1,24 @@
+import { Product } from "@/types/product";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface Shade {
   name: string;
   color: string;
-  image_url: string;
+  image: string;
 }
 
-interface Product {
-  name: string;
-  price: number;
-  currency: string;
-  points_earned: number;
-  available_shades: Shade[];
-  description: string;
-  features: string[];
-  ingredients: string[];
-  country_of_origin: string;
-  manufacturer: string;
-  address_of_manufacturer: string;
-  how_to_use: string;
-  shelf_life: string;
-  product_code: string;
-}
+// interface BrandInfo {
+//   founded: number;
+//   followers: string;
+//   locations: string;
+//   orders: string;
+// }
 
-interface BrandInfo {
-  founded: number;
-  followers: string;
-  locations: string;
-  orders: string;
-}
-
-interface Certifications {
-  authentic: string;
-  shipping: string;
-  payment: string;
-}
+// interface Certifications {
+//   authentic: string;
+//   shipping: string;
+//   payment: string;
+// }
 
 interface CartItem {
   _id: string;
@@ -44,8 +28,8 @@ interface CartItem {
   singleCartTotal: number;
   selectedShade: Shade;
   product: Product;
-  brand_info: BrandInfo;
-  certifications: Certifications;
+  // brand_info: BrandInfo;
+  // certifications: Certifications;
   [key: string]: any;
 }
 

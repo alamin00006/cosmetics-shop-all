@@ -85,7 +85,7 @@ const sendOtp = async (userData) => {
     const method = "POST";
     // Send SMS and wait for the response
 
-    await otpSendSms2(otpMessage, method);
+    // await otpSendSms2(otpMessage, method);
 
     // Send OTP To User Email
     const mailMessage = `For Sharikana OTP for account verification is: ${customerOtp}. Enter this code to complete your Signup process. Thank you`;

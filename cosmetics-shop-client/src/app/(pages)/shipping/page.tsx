@@ -4,9 +4,26 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store"; // Adjust the import path as needed
 import { getTotals } from "@/redux/reducers/cartSlice";
+import { useGetUserQuery } from "@/redux/api/authApi";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import { getBaseUrl } from "@/helpers/config/envConfig";
+import { useRouter } from "next/navigation";
 
 export default function ShippingAddressPage() {
+  const {
+    data: userData,
+    isSuccess: userIsSuccess,
+    error: userError,
+    isLoading: userIsLoading,
+    refetch,
+  } = useGetUserQuery();
+
+  const user = userIsSuccess ? userData.data : null;
+  const router = useRouter();
   const dispatch = useDispatch();
+  const [isUploading, setIsUploading] = useState(false);
+
   const [shippingValue, setShippingValue] = useState(0);
   const [shippingValueMissing, setShippingValueMissing] = useState("");
 
@@ -17,7 +34,7 @@ export default function ShippingAddressPage() {
   const [total, setTotal] = useState(cartTotalAmount || 0);
 
   const [formData, setFormData] = useState({
-    email: "",
+    email: user?.email || "",
     firstName: "",
     lastName: "",
     address: "",
@@ -28,6 +45,7 @@ export default function ShippingAddressPage() {
     phone: "",
   });
 
+  console.log("User Data:", user);
   // Update totals whenever cart changes
   useEffect(() => {
     dispatch(getTotals());
@@ -53,7 +71,8 @@ export default function ShippingAddressPage() {
     }));
   };
 
-  const handleSubmit = (e: any) => {
+  console.log();
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     if (shippingValue === 0) {
@@ -62,17 +81,35 @@ export default function ShippingAddressPage() {
       );
     }
     const orderData = {
+      user: user?._id || null,
       ...formData,
       shippingValue,
       discountCode,
       total: total + shippingValue,
-      cartItems,
+      orderItems: cartItems,
       cartTotalQuantity,
       cartTotalAmount,
     };
-    console.log("Order Submitted:", orderData);
+
+    try {
+      setIsUploading(true);
+
+      await axios.post(`${getBaseUrl()}/orders`, {
+        ...orderData,
+      });
+      toast.success("Order submitted successfully!");
+
+      router.push("/thank-you");
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to submit order.";
+      toast.error(errorMessage);
+
+      console.error("Error submitting order:", error);
+    } finally {
+      setIsUploading(false);
+    }
     // Here you can add API call to submit order to backend
-    alert("Order submitted successfully!");
   };
 
   return (
@@ -260,6 +297,11 @@ export default function ShippingAddressPage() {
           </div>
         </div>
       </div>
+      <Toaster
+        position="top-center"
+        containerStyle={{ marginTop: "100px" }}
+        reverseOrder={false}
+      />
     </div>
   );
 }

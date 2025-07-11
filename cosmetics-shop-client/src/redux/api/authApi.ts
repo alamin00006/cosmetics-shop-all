@@ -1,6 +1,6 @@
 import { baseApi } from "./baseApi";
 
-const AUTH_URL = "/admin-auth";
+const AUTH_URL = "/users";
 
 // Define types for requests/responses
 export interface LoginPayload {

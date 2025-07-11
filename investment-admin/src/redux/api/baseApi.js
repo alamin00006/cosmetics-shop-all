@@ -29,5 +29,6 @@ export const baseApi = createApi({
     "subcategories",
     "company-bank",
     "products",
+    "brands",
   ],
 });

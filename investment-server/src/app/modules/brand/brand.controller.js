@@ -19,7 +19,7 @@ const createBrand = async (req, res) => {
   }
 };
 
-const getBrand = async (req, res) => {
+const getBrands = async (req, res) => {
   try {
     const brandTotalCount = await Brand.countDocuments({});
     const page = parseInt(req.query?.page);
@@ -119,7 +119,7 @@ const deleteBrand = async (req, res) => {
 
 export const BrandController = {
   createBrand,
-  getBrand,
+  getBrands,
   getBrandDetails,
   updateBrand,
   deleteBrand,

@@ -1,3 +1,5 @@
+import httpStatus from "http-status";
+import ApiError from "../../../error/ApiError.js";
 import Product from "./product.model.js";
 
 // Create Project
@@ -10,15 +12,22 @@ const createProduct = async (productData) => {
   return projectUpload;
 };
 
-const getAllProducts = async (userId) => {
-  const getAllProducts = await Product.find({ userId });
+const getAllProducts = async () => {
+  const getAllProducts = await Product.find({}).populate(
+    "mainCategoryId subCategoryId brand"
+  );
+  if (!getAllProducts) {
+    throw new ApiError(httpStatus.NOT_FOUND, "No products found");
+  }
 
   return getAllProducts;
 };
 
 const getProductDetails = async (id) => {
-  const bankAccount = await Product.findOne({ _id: id });
-  return bankAccount;
+  const product = await Product.findOne({ _id: id }).populate(
+    "mainCategoryId subCategoryId brand"
+  );
+  return product;
 };
 
 const updateProduct = async (productId, productData) => {

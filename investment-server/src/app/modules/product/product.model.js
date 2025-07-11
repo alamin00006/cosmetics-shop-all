@@ -12,6 +12,10 @@ const productSchema = new Schema(
       type: Number,
       required: true,
     },
+    discount: {
+      type: Number,
+      default: 0,
+    },
     currency: {
       type: String,
       default: "BDT",
@@ -54,28 +58,16 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
-    features: [
-      {
-        type: String,
-      },
-    ],
-    ingredients: [
-      {
-        type: String,
-      },
-    ],
+
+    ingredients: {
+      type: String,
+    },
+
     countryOfOrigin: {
       type: String,
-      required: true,
+      // required: true,
     },
-    manufacturer: {
-      type: String,
-      required: true,
-    },
-    addressOfManufacturer: {
-      type: String,
-      required: true,
-    },
+
     howToUse: {
       type: String,
     },
@@ -85,7 +77,7 @@ const productSchema = new Schema(
     productCode: {
       type: String,
       // required: true,
-      unique: true,
+      // unique: true,
     },
     quantity: {
       type: Number,
@@ -146,6 +138,11 @@ const productSchema = new Schema(
       type: String,
       enum: ["Yes", "No"],
       default: "No",
+    },
+    productType: {
+      type: String,
+      enum: ["Regular", "Combo", "Gift", "New Arrival", "Best Seller"],
+      default: "Regular",
     },
     isPublished: {
       type: String,

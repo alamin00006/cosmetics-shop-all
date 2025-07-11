@@ -15,6 +15,8 @@ import { ProductRoutes } from "../modules/product/product.route.js";
 import { MainCategoryRoutes } from "../modules/mainCategory/mainCategory.route.js";
 import { CategoryRoutes } from "../modules/category/category.route.js";
 import { SubCategoryRoutes } from "../modules/subCategory/subCategory.route.js";
+import { BrandRoutes } from "../modules/brand/brand.route.js";
+import { OrderRoutes } from "../modules/order/order.route.js";
 
 const router = express.Router();
 
@@ -26,6 +28,10 @@ const moduleRoutes = [
   {
     path: "/main-categories",
     route: MainCategoryRoutes,
+  },
+  {
+    path: "/brands",
+    route: BrandRoutes,
   },
   {
     path: "/category",
@@ -78,6 +84,10 @@ const moduleRoutes = [
   {
     path: "/products",
     route: ProductRoutes,
+  },
+  {
+    path: "/orders",
+    route: OrderRoutes,
   },
 ];
 

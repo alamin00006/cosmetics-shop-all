@@ -1,12 +1,9 @@
 "use client";
 
 import React, { useRef } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import SliderContainer from "../Container/SliderContainer";
+
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import Image from "next/image";
 
 interface CollectionItem {
   label: string;
@@ -56,80 +53,50 @@ const collectionItems: CollectionItem[] = [
   },
 ];
 
-const CollectionCarousel: React.FC = () => {
-  const prevRef = useRef<HTMLButtonElement>(null);
-  const nextRef = useRef<HTMLButtonElement>(null);
+const splideOptions = {
+  type: "loop",
+  perPage: 6,
+  autoplay: true,
+  pauseOnHover: true,
+  speed: 500,
 
+  breakpoints: {
+    640: {
+      perPage: 2,
+    },
+    768: {
+      perPage: 3,
+    },
+    1024: {
+      perPage: 4,
+    },
+  },
+  arrows: true,
+  pagination: false,
+  interval: 3000,
+};
+
+const CollectionCarousel: React.FC = () => {
   return (
     <div className="py-10 bg-white">
-      <SliderContainer className={" "}>
-        <div className="relative">
-          {/* Swiper Carousel */}
-          <Swiper
-            modules={[Navigation]}
-            spaceBetween={4}
-            slidesPerView={3} // Show 3 images on mobile by default
-            speed={800} // Increased transition speed for smoother sliding (800ms)
-            grabCursor={true} // Adds a grabbing cursor for better UX
-            resistanceRatio={0.85} // Slightly reduces resistance at edges for smoother feel
-            onInit={(swiper) => {
-              // @ts-ignore
-              swiper.params.navigation.prevEl = prevRef.current;
-              // @ts-ignore
-              swiper.params.navigation.nextEl = nextRef.current;
-              swiper.navigation.init();
-              swiper.navigation.update();
-            }}
-            breakpoints={{
-              424: { slidesPerView: 2.4, spaceBetween: 8 }, // Still 3 images on smaller screens
-              768: { slidesPerView: 3, spaceBetween: 10 }, // 4 images on tablet (optional intermediate step)
-              1024: { slidesPerView: 6.5, spaceBetween: 12 }, // 6.5 images on PC (unchanged)
-            }}
-            className="smooth-swiper"
-          >
-            {collectionItems.map((item, index) => (
-              <SwiperSlide key={index}>
-                <div className="flex flex-col items-center">
-                  <div className="w-44 h-44 sm:w-24 sm:h-24 md:w-64 md:h-64 min-w-0 bg-pink-100 rounded-lg flex items-center justify-center overflow-hidden">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.label}
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          "https://via.placeholder.com/150?text=" + item.label;
-                      }}
-                    />
-                  </div>
-                  <h3 className="mt-4 text-sm sm:text-base md:text-base font-semibold text-gray-800 text-center">
-                    {item.label}
-                  </h3>
-                </div>
-              </SwiperSlide>
-            ))}
-            {/* Navigation Arrows Inside Swiper */}
-            <button
-              ref={prevRef}
-              className="swiper-prev hidden md:flex absolute top-1/2 -left-4 -translate-y-1/2 z-10 p-2 bg-gray-100 rounded-full transition-colors"
-            >
-              <FaChevronLeft className="w-5 h-5 text-gray-600" />
-            </button>
-            <button
-              ref={nextRef}
-              className="swiper-next hidden md:flex absolute top-1/2 -right-4 -translate-y-1/2 z-10 p-2 bg-gray-100 rounded-full transition-colors"
-            >
-              <FaChevronRight className="w-5 h-5 text-gray-600" />
-            </button>
-          </Swiper>
-
-          {/* Inline CSS for smooth transitions */}
-          <style jsx>{`
-            .smooth-swiper .swiper-slide {
-              transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            }
-          `}</style>
-        </div>
-      </SliderContainer>
+      <Splide options={splideOptions}>
+        {collectionItems?.map((banner, index) => (
+          <SplideSlide key={index}>
+            <div className="">
+              <Image
+                src={banner.imageUrl}
+                alt="Banner image"
+                width={1140}
+                height={300}
+                className="md:object-cover sm:object-contain w-full h-full"
+                //  className="w-full h-full object-contain"
+                quality={100}
+                priority
+              />
+            </div>
+          </SplideSlide>
+        ))}
+      </Splide>
     </div>
   );
 };

@@ -3,17 +3,19 @@ const { ObjectId } = mongoose.Schema.Types;
 
 const brandSchema = mongoose.Schema(
   {
-    products: [
-      {
-        type: ObjectId,
-        ref: "Product",
-      },
-    ],
     name: {
       type: String,
       required: [true, "Please Provide Brand Name"],
       trim: true,
       unique: true,
+    },
+    description: {
+      type: String,
+      // required: [true, "Please Provide Brand Description"],
+    },
+    image: {
+      type: String,
+      // required: true,
     },
   },
   {

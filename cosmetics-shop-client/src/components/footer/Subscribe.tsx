@@ -4,7 +4,7 @@ import { FaEnvelope } from "react-icons/fa";
 
 const Subscribe: React.FC = () => {
   return (
-    <div className="bg-[#fafaf5] py-20">
+    <div className="bg-yellow-100 py-20">
       <Container className={" "}>
         <div className="flex justify-center mb-4">
           <FaEnvelope className="w-10 h-10 text-gray-600" />

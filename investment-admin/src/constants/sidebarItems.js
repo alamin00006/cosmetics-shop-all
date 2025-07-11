@@ -80,6 +80,11 @@ export const sidebarItems = (role) => {
                 label: "Categories",
                 route: "/categories-list",
               },
+              {
+                icon: <MdOutlineCategory style={iconStyle} />,
+                label: "Brands",
+                route: "/brands-list",
+              },
             ]
           : []),
       ],

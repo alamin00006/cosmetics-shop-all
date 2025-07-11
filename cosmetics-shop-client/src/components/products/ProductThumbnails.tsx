@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image"; // Import Next.js Image component
 
 interface ProductThumbnailsProps {
   thumbnails: string[];
@@ -12,9 +13,9 @@ const ProductThumbnails: React.FC<ProductThumbnailsProps> = ({
   mainImage,
 }) => {
   return (
-    <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+    <div className=" overflow-x-auto scrollbar-hide space-y-3">
       {thumbnails.map((thumbnail, index) => (
-        <img
+        <Image
           key={index}
           src={thumbnail}
           alt={`Thumbnail ${index + 1}`}
@@ -23,10 +24,10 @@ const ProductThumbnails: React.FC<ProductThumbnailsProps> = ({
               ? "border-indigo-500"
               : "border-gray-200 hover:border-gray-400"
           }`}
+          width={80} // Maximum width for md breakpoint (20 * 4 for pixel density)
+          height={80} // Maximum height for md breakpoint
+          sizes="(max-width: 640px) 48px, (max-width: 768px) 64px, 80px"
           onClick={() => onThumbnailClick(thumbnail)}
-          onError={(e) => {
-            e.currentTarget.src = `https://via.placeholder.com/64?text=Thumbnail`;
-          }}
         />
       ))}
     </div>

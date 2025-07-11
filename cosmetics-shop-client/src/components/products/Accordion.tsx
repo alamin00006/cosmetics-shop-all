@@ -1,6 +1,7 @@
+import { convertHtml } from "@/utils/convertHtml";
 import React, { useState } from "react";
 
-interface AccordionItem {
+export interface AccordionItem {
   title: string;
   content: string;
 }
@@ -29,7 +30,12 @@ const Accordion: React.FC<AccordionProps> = ({ items }) => {
           </button>
           {openIndex === index && (
             <div className="p-4 text-sm text-gray-600 bg-gray-50">
-              {item.content}
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: convertHtml(item.content),
+                }}
+                className="md:text-[16px] sm:text-[14px] "
+              ></span>
             </div>
           )}
         </div>

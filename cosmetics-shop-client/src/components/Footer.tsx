@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
       <Subscribe />
 
       {/* Footer */}
-      <footer className="bg-gray-100 py-4">
+      <footer className="bg-white py-4">
         <Container>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
             <QuickLinks />
