@@ -1,20 +1,17 @@
 import { formatDate } from "@/utils/dateConvert";
 import { formatBDT } from "@/utils/formateBDT";
 
-const InvestorProfitHistory = ({ profits }) => {
+const InvestorProfitHistory = ({ items }) => {
   return (
     <div className="mt-4 gap-4 border border-[#d1d5db] p-4">
-      <h2 className="text-lg font-bold">Profit Disburse Summary</h2>
+      <h2 className="text-lg font-bold">Product Detail Summary</h2>
       {/* Wrapper for horizontal scrolling */}
       <div className="overflow-x-auto">
         <table className="w-full mt-2 text-sm border border-gray-300">
           <thead>
             <tr className="bg-gray-200 text-left">
-              <th>Date</th>
-              <th>Inv.Id</th>
               <th>Project Name</th>
               <th>Inv.Name</th>
-
               <th>Profit Ratio</th>
               <th>Profit Count</th>
               <th>Return Type</th>
@@ -23,7 +20,7 @@ const InvestorProfitHistory = ({ profits }) => {
             </tr>
           </thead>
           <tbody>
-            {profits?.map((profit) => (
+            {items?.map((profit) => (
               <tr key={profit?._id} className="border-gray-200 border-b">
                 <td>{formatDate(profit?.createdAt)}</td>
                 <td className="uppercase">#{profit?.investmentId?.id}</td>

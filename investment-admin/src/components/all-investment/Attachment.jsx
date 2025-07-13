@@ -5,7 +5,6 @@ import Link from "next/link";
 import { FaFile } from "react-icons/fa";
 
 const Attachment = ({ user, nominee, isInvestmentView }) => {
-  console.log(user);
   return (
     <div className="border border-[#d1d5db] rounded-lg p-4 mt-4">
       <h4 className="flex items-center gap-2 text-lg font-bold text-green-500 mb-3">

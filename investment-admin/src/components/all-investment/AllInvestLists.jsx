@@ -1,12 +1,10 @@
 "use client";
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { useGetProjectsByCompanyOrPRQuery } from "@/redux/api/productsApi";
-import { useGetInvestmentsQuery } from "@/redux/api/investmentApi";
+
+import { useGetOrdersQuery } from "@/redux/api/investmentApi";
 import { useGetUserQuery } from "@/redux/api/authApi";
-import { USER_ROLE } from "@/constants/role";
 import AllInvestmentTable from "./AllInvestmentTable";
-import InvestmentOverviewCard from "./InvestmentOverviewCard";
 import InvestmentFilter from "./InvestmentFilter";
 
 import ExportInvestorData from "./ExportInvestorData";
@@ -32,27 +30,8 @@ const AllInvestLists = () => {
     isLoading: userIsLoading,
   } = useGetUserQuery();
 
-  // Project Params
-  const projectParams = {
-    companyId: userData?.company?._id || "",
-    id: userData?.role === USER_ROLE.PR_MANAGER ? userData?.PRManager?._id : "",
-  };
-
-  const {
-    data: projects,
-    error: projectGetError,
-    isLoading: projectsLoading,
-  } = useGetProjectsByCompanyOrPRQuery(projectParams, {
-    skip: !userData, // Skip until userData is available
-  });
-
   // Investment Params
   const params = {
-    prManagerId:
-      userData?.role === USER_ROLE.PR_MANAGER ? userData?.PRManager?._id : "",
-    companyId: userData?.company?._id || "",
-    project: projectId,
-    returnType: profitShareType,
     status,
     searchQuery: debouncedQuery,
     page,
@@ -60,18 +39,18 @@ const AllInvestLists = () => {
   };
 
   const {
-    data: allInvestment,
+    data: allOrders,
     error: investmentError,
     isLoading: investmentIsLoading,
     refetch,
-  } = useGetInvestmentsQuery(params, { skip: !userData });
+  } = useGetOrdersQuery(params, { skip: !userData });
 
-  const totalCounts = allInvestment?.totalCount ?? 0;
-  const totalInvestmentAmount = allInvestment?.totalInvestmentAmount ?? 0;
-  const totalInvestor = allInvestment?.totalInvestor ?? 0;
-  const monthlyInvestors = allInvestment?.monthlyInvestor ?? 0;
-  const quarterlyInvestors = allInvestment?.quarterlyInvestor ?? 0;
-  const yearlyInvestors = allInvestment?.yearlyInvestor ?? 0;
+  const totalCounts = allOrders?.orderTotalCount ?? 0;
+  const totalInvestmentAmount = allOrders?.totalInvestmentAmount ?? 0;
+  const totalInvestor = allOrders?.totalInvestor ?? 0;
+  const monthlyInvestors = allOrders?.monthlyInvestor ?? 0;
+  const quarterlyInvestors = allOrders?.quarterlyInvestor ?? 0;
+  const yearlyInvestors = allOrders?.yearlyInvestor ?? 0;
 
   const scrollTable = (direction) => {
     const tableContainer = document.getElementById("table-container");
@@ -85,16 +64,15 @@ const AllInvestLists = () => {
   };
 
   // Handle loading and error states
-  if (userIsLoading || projectsLoading) {
+  if (userIsLoading) {
     return <Loading />;
   }
 
-  if (userError || projectGetError || investmentError) {
+  if (userError || investmentError) {
     return (
       <p className="text-center text-red-500 py-4" role="alert">
         Error:{" "}
         {userError?.data?.message ||
-          projectGetError?.data?.message ||
           investmentError?.data?.message ||
           "Failed to load data"}
       </p>
@@ -105,7 +83,7 @@ const AllInvestLists = () => {
     <>
       {/* <Button label="Check" icon="pi pi-check" /> */}
 
-      <div className="pb-10">
+      {/* <div className="pb-10">
         <InvestmentOverviewCard
           totalInvestors={totalInvestor}
           totalInvestmentAmount={totalInvestmentAmount}
@@ -113,9 +91,9 @@ const AllInvestLists = () => {
           quarterlyInvestors={quarterlyInvestors}
           yearlyInvestors={yearlyInvestors}
         />
-      </div>
+      </div> */}
 
-      <div className="mx-4">
+      <div className="mx-4 mt-5">
         <InvestmentFilter
           setProfitShareType={setProfitShareType}
           profitShareType={profitShareType}
@@ -123,7 +101,6 @@ const AllInvestLists = () => {
           status={status}
           projectId={projectId}
           setProjectId={setProjectId}
-          projects={projects?.projects ?? []}
           setSearchQuery={setSearchQuery}
           tags={tags}
           setTags={setTags} // Pass setTags to InvestmentFilter
@@ -131,7 +108,7 @@ const AllInvestLists = () => {
 
         <div className="flex justify-end mb-5">
           <div>
-            <ExportInvestorData investors={allInvestment?.investments ?? []} />
+            <ExportInvestorData investors={allOrders?.orders ?? []} />
             <div className="flex justify-end mt-2">
               <button
                 onClick={() => scrollTable("left")}
@@ -153,26 +130,24 @@ const AllInvestLists = () => {
 
         {investmentIsLoading && (
           <p className="text-center py-2" role="status" aria-live="polite">
-            Loading investments...
+            Loading Orders...
           </p>
         )}
 
         {!investmentIsLoading && (
           <>
-            {allInvestment?.investments?.length === 0 ? (
+            {allOrders?.orders?.length === 0 ? (
               <p className="text-center py-4" role="alert">
-                {debouncedQuery
-                  ? "No results found"
-                  : "No investments available"}
+                {debouncedQuery ? "No results found" : "No orders available"}
               </p>
             ) : (
               <>
                 <AllInvestmentTable
-                  investments={allInvestment?.investments ?? []}
+                  orders={allOrders?.orders ?? []}
                   refetch={refetch}
                   userData={userData}
                 />
-                {allInvestment?.investments?.length > 0 && (
+                {allOrders?.orders?.length > 0 && (
                   <Pagination totalDataCount={totalCounts} />
                 )}
               </>
