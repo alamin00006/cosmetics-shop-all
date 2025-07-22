@@ -1,10 +1,10 @@
 import { baseApi } from "./baseApi";
 
-const INVESTMENT_URL = "/investment";
+const INVESTMENT_URL = "/orders";
 
 const investmentApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getInvestments: build.query({
+    getOrders: build.query({
       query: (arg) => ({
         url: `${INVESTMENT_URL}`,
         method: "GET",
@@ -25,7 +25,7 @@ const investmentApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetInvestmentsQuery,
+  useGetOrdersQuery,
   useGetSingleInvestmentByUserORInvestIdQuery,
 } = investmentApi;
 

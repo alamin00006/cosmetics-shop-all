@@ -5,8 +5,10 @@ const getAllOrders = async (req, res, next) => {
     const page = parseInt(req.query?.page);
     const size = parseInt(req.query?.size);
     const orders = await Order.find({})
+      .populate("user")
       .skip(page * size)
       .limit(size);
+
     const orderTotalCount = await Order.countDocuments({});
 
     //     where("name").equals(/\w/)
@@ -32,7 +34,7 @@ const getOrders = async (req, res, next) => {
   try {
     const user = req.params.user;
     // console.log(user)
-    const orders = await Order.find({ user });
+    const orders = await Order.find({ user }).populate("user");
     //     where("name").equals(/\w/)
     //    .where('quantity').gte(100)
     // const products = await Product.findById('63b278bdceb2c72867ad2964')
