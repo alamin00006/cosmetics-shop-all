@@ -1,4 +1,4 @@
-export const formatNumber = (num) => {
+export const formatNumber = (num: number) => {
   if (num >= 10000000) {
     return (num / 10000000).toFixed(1).replace(/\.0$/, "") + "CR"; // Convert to crores (CR)
   } else if (num >= 1000000) {

@@ -1,4 +1,4 @@
-export const isValidPhoto = (file) => {
+export const isValidPhoto = (file: File) => {
   const validExtensions = [
     "png",
     "jpeg",
