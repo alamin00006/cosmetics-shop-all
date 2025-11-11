@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 
-import TopHeader from "./TopHeader";
-import MiddleHeader from "./MiddleHeader";
 import BottomHeader from "./BottomHeader";
+import TopNavbar from "./TopNavbar";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -32,8 +31,8 @@ const Header = () => {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? "shadow-sm bg-white" : ""}`}
     >
-      <TopHeader />
-      <MiddleHeader toggleMobileMenu={toggleMobileMenu} />
+      <TopNavbar />
+
       <BottomHeader
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
