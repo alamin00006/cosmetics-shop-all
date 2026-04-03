@@ -1,60 +1,20 @@
-import "@/styles/globals.css";
-import { Metadata, Viewport } from "next";
+import "./globals.css";
+import type { Metadata } from "next";
+import { Providers } from "@/components/providers";
 
-import clsx from "clsx";
-
-import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
-
-import Header from "@/components/header/Header";
-import Footer from "@/components/Footer";
-import { DesignProvider } from "./providers";
-import { Providers } from "@/redux/provider";
-import "@splidejs/react-splide/css";
 export const metadata: Metadata = {
-  title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  icons: {
-    icon: "/favicon.ico",
-  },
-};
-
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
+  title: "Cosmetics",
+  description: "Converted from Vite to Next.js",
 };
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <Providers>
-      <html suppressHydrationWarning lang="en">
-        <head />
-        <body
-          className={clsx(
-            "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable
-          )}
-        >
-          <DesignProvider
-            themeProps={{ attribute: "class", defaultTheme: "light" }}
-          >
-            <Header />
-
-            {children}
-
-            <Footer />
-          </DesignProvider>
-        </body>
-      </html>
-    </Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
   );
 }

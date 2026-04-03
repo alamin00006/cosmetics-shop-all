@@ -1,0 +1,204 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  phone     String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart         Cart?
+  wishlist     Wishlist?
+  addresses    Address[]
+  orders       Order[]
+  WishlistItem WishlistItem[]
+
+  @@map("users")
+}
+
+model Category {
+  id           String   @id
+  name         String
+  icon         String?
+  image        String?
+  productCount Int?     @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  subcategories Subcategory[]
+  products      Product[]
+
+  @@map("categories")
+}
+
+model Subcategory {
+  id         Int      @id @default(autoincrement())
+  name       String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@map("subcategories")
+}
+
+model Product {
+  id            String   @id
+  name          String
+  description   String?
+  price         Float
+  originalPrice Float?
+  image         String?
+  images        String[]
+  brand         String?
+  rating        Float?   @default(0)
+  reviewCount   Int?     @default(0)
+  inStock       Boolean  @default(true)
+  isNew         Boolean  @default(false)
+  isBestseller  Boolean  @default(false)
+  categoryId    String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  category     Category       @relation(fields: [categoryId], references: [id])
+  colors       Color[]
+  cartItems    CartItem[]
+  tags         String[]
+  OrderItem    OrderItem[]
+  WishlistItem WishlistItem[]
+
+  @@map("products")
+}
+
+model Color {
+  id        Int         @id @default(autoincrement())
+  name      String
+  hex       String
+  productId String
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  CartItem  CartItem[]
+  OrderItem OrderItem[]
+
+  @@unique([productId, name])
+  @@map("colors")
+}
+
+model Cart {
+  id     String     @id @default(cuid())
+  userId String     @unique
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items  CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        String @id @default(cuid())
+  cartId    String
+  productId String
+  colorId   Int?
+  quantity  Int    @default(1)
+
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  color   Color?  @relation(fields: [colorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId, colorId])
+  @@map("cart_items")
+}
+
+model Address {
+  id        String  @id
+  userId    String
+  type      String
+  name      String
+  street    String
+  city      String
+  state     String
+  zipCode   String
+  country   String
+  isDefault Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("addresses")
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  productId String
+  colorId   Int?
+  quantity  Int
+  price     Float // snapshot at order time
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+  color   Color?  @relation(fields: [colorId], references: [id], onDelete: SetNull)
+
+  @@map("order_items")
+}
+
+model Order {
+  id              String @id @default(cuid())
+  userId          String
+  status          String @default("pending")
+  totalAmount     Float
+  shippingAddress Json?
+
+  user  User        @relation(fields: [userId], references: [id])
+  items OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("orders")
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  addedAt   DateTime @default(now())
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product    Product   @relation(fields: [productId], references: [id])
+  Wishlist   Wishlist? @relation(fields: [wishlistId], references: [id])
+  wishlistId String?
+
+  @@unique([userId, productId])
+  @@map("wishlist_items")
+}
+
+model Wishlist {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  items WishlistItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("wishlists")
+}

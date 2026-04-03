@@ -1,60 +1,40 @@
-interface AvailableShade {
+export interface ProductColor {
   name: string;
-  color: string;
-  image: string;
-}
-
-interface ProductImage {
-  title?: string | null;
-  image?: string | null;
-}
-
-interface BrandInfo {
-  founded?: number;
-  followers?: string;
-  locations?: string;
-  orders?: string;
-}
-
-interface Certifications {
-  authentic?: string;
-  shipping?: string;
-  payment?: string;
-}
-interface brand {
-  name?: string;
-  description?: string;
+  hex: string;
   image?: string;
 }
 
 export interface Product {
-  _id: string;
+  id: string;
   name: string;
-  price: number;
-  discount: number;
-  currency: string;
-  pointsEarned: number;
-  shade?: string;
-  availableShades: AvailableShade[];
-  productImage: ProductImage[];
   description: string;
-  features: string;
-  ingredients: string;
-  countryOfOrigin: string;
-  manufacturer: string;
-  addressOfManufacturer: string;
-  howToUse?: string;
-  shelfLife?: string;
-  productCode?: string;
+  price: number;
+  originalPrice?: number;
+  image: string;
+  images?: string[];
+  category: string;
+  brand: string;
+  rating: number;
+  reviewCount: number;
+  inStock: boolean;
+  colors?: ProductColor[];
+  specifications?: Record<string, string>;
+  features?: string[];
+  tags?: string[];
+  isNew?: boolean;
+  isBestseller?: boolean;
+}
+
+export interface CartItem {
+  product: Product;
   quantity: number;
-  brand?: brand;
-  mainCategoryId?: string;
-  categoryId?: string;
-  subCategoryId: string;
-  brandInfo?: BrandInfo;
-  certifications?: Certifications;
-  isFeatured: "Yes" | "No";
-  isPublished: "Yes" | "No";
-  createdAt: Date;
-  updatedAt: Date;
+  selectedColor?: ProductColor;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  icon: string;
+  productCount: number;
+  image?: string;
 }
